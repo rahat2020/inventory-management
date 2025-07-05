@@ -1,0 +1,121 @@
+@import "tailwindcss";
+@import "tailwindcss";
+
+:root {
+  --brand-color: #3173b1;
+  --brand-light-color: #28ade2c0;
+  --bg-light-color: #f4f1ea;
+  --brand-link-color: #3db1e2;
+  --border-light: #d8e0ed;
+  --border: #b7b7b7;
+  --bg-settings-module: #ff5900;
+  --brand-text-color: #0b6eb5;
+  width: 100%;
+  font-family: "Maven Pro", serif !important;
+}
+
+@view-transition {
+  navigatoion: auto;
+}
+
+.text-brand {
+  color: var(--brand-color);
+}
+
+.bg-brand {
+  background-color: var(--brand-color);
+}
+.bg-settings {
+  background-color: var(--bg-settings-module);
+}
+.text-sidebar {
+  color: var(--brand-text-color);
+}
+/* search icon */
+#searchText {
+  z-index: 1;
+  background-size: 20px;
+  background-image: url(https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg);
+  background-repeat: no-repeat;
+  background-position-x: right;
+  background-position-y: center;
+  background-origin: content-box;
+  z-index: 1;
+}
+
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.svg-ais {
+  border-top-right-radius: 10px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  padding-top: 8px;
+  height: 70.19px;
+  background: linear-gradient(226.22deg, #2ac0ea -0.75%, #ffffff 43.73%);
+}
+.svg-hcm {
+  height: 70.19px;
+  background: linear-gradient(226.22deg, #4a2aea -0.75%, #ffffff 43.73%);
+  border-top-right-radius: 10px;
+  padding-left: 10px;
+  padding-top: 5px;
+}
+.svg-plm {
+  height: 70.19px;
+  background: linear-gradient(226.22deg, #11af97 -0.75%, #ffffff 43.73%);
+  border-top-right-radius: 10px;
+  padding-left: 10px;
+  padding-top: 5px;
+}
+.svg-scm {
+  height: 70.19px;
+  background: linear-gradient(226.22deg, #fb6363 -0.75%, #ffffff 43.73%);
+  border-top-right-radius: 10px;
+  padding-left: 10px;
+  padding-top: 11px;
+}
+.ais-gradient:hover {
+  color: #ffffff !important;
+  background: linear-gradient(180deg, #4dbbff 0%, #659fe2 100%) !important;
+}
+.hcm-gradient:hover {
+  color: #ffffff !important;
+  background: linear-gradient(180deg, #4d56ff 0%, #7265e2 100%) !important;
+}
+.plm-gradient:hover {
+  color: #ffffff !important;
+  background: linear-gradient(180deg, #00a597 0%, #459bc0 100%) !important;
+}
+.scm-gradient:hover {
+  color: #ffffff !important;
+  background: linear-gradient(180deg, #ed3737 0%, #fb6363 100%) !important;
+}
+.sidebarBtn:hover {
+  transition: all 0.3s ease-in-out;
+  background: linear-gradient(0deg, #b6cad6 0%, #deecff 100%) !important;
+}
+
+/* auth */
+.authContainer {
+  background-image: url("/assets/authbg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100%;
+}

@@ -24,7 +24,7 @@ const FallbackErrorUI = ({ error, resetErrorBoundary }) => {
           resetErrorBoundary();
           handleAction;
         }}
-        className="bg-gradient-to-b from-[#484774] to-[#100F39] font-semibold cursor-pointer text-white px-4 py-2 mt-4 rounded"
+        className="bg-[#155DFC] font-semibold cursor-pointer text-white px-4 py-2 mt-4 rounded"
       >
         Go back
       </button>

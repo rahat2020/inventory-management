@@ -37,7 +37,6 @@ const AppModal = ({
 }) => {
   const modalRef = useRef(null);
 
-  console.log("appmodal");
   // states
   const [countdown, setCountdown] = useState(5);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -268,4 +267,3 @@ const AppModal = ({
   );
 };
 export default memo(AppModal);
-// Usage

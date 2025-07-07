@@ -1,6 +1,7 @@
+import { useMemo } from "react";
 import { size } from "lodash";
-import { memo, useMemo } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import AppSpinner from "./AppSpinner";
 
 const AppDataTable = ({
   columns,
@@ -12,19 +13,23 @@ const AppDataTable = ({
   singleHeaderTitle = "",
   isSingleHeader = false,
   tableBodyClasses = "py-3 px-4",
+  isDataLoading = true,
   multiHeaderClasses = "py-3 px-4 text-gray-800",
-  scrollId,
-  fetchMoreData,
-  hasMore,
-  options: { loadingData = false } = {},
+  options: {
+    loadMoreData = () => {},
+    hasMoreData = false,
+    loadingData = false,
+  } = {},
 }) => {
+  // get columns counter
   const columnCount = useMemo(
     () => columns.filter((c) => c.isShow !== false).length,
     [columns]
   );
-
+  console.log("isBodyScrollable", isBodyScrollable);
   const filteredColumnsData = columns?.filter((item) => item.isShow !== false);
 
+  // For width handling, create array of widths
   const columnWidths = useMemo(
     () =>
       columns
@@ -34,87 +39,107 @@ const AppDataTable = ({
   );
 
   return (
-    <div className="w-full overflow-x-auto !scrollbar-hide">
-      <table className="min-w-max w-full table-fixed border-collapse">
-        <thead
+    <div
+      id="scrollable-table-body"
+      className={`w-full relative !scrollbar-hide ${
+        isBodyScrollable ? "overflow-y-auto" : "overflow-x-auto"
+      }`}
+      style={{
+        maxHeight: isBodyScrollable ? bodyMaxHeight : "auto",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+      }}
+    >
+      <InfiniteScroll
+        dataLength={data.length}
+        next={loadMoreData}
+        hasMore={hasMoreData}
+        loader={
+          loadingData && (
+            <div className="text-center text-sm py-4">Loading...</div>
+          )
+        }
+        scrollableTarget="scrollable-table-body"
+        scrollThreshold={0.9}
+      >
+        <table
           className={isBodyScrollable ? "block w-full" : ""}
           style={isBodyScrollable ? { width: "100%" } : {}}
         >
-          {isSingleHeader ? (
-            <tr className={isBodyScrollable ? "flex w-full" : ""}>
-              <th
-                colSpan={columnCount}
-                className="bg-[#DFF0D8] text-center py-2 font-bold border-t border-b border-gray-200 text-[1rem]"
-                style={{
-                  width: isBodyScrollable ? "100%" : undefined,
-                  minWidth: isBodyScrollable ? "100%" : undefined,
-                }}
-              >
-                {singleHeaderTitle}
-              </th>
-            </tr>
-          ) : (
-            <tr className={isBodyScrollable ? "flex w-full" : ""}>
-              {filteredColumnsData.map((col, index) => (
+          <thead className={isBodyScrollable ? "block" : ""}>
+            {isSingleHeader ? (
+              <tr className="table w-full table-fixed">
                 <th
-                  key={index}
-                  className={`font-semibold ${multiHeaderClasses} ${
-                    isBodyScrollable ? "overflow-hidden" : ""
-                  }`}
+                  // colSpan={columns.filter((c) => c.isShow !== false).length}
+                  colSpan={columnCount}
+                  className="bg-[#DFF0D8] text-center py-2 font-bold border-t border-b border-gray-200 text-[1rem]"
                   style={{
-                    width: columnWidths[index],
-                    minWidth: columnWidths[index],
-                    maxWidth: columnWidths[index],
-                    boxSizing: "border-box",
+                    width: isBodyScrollable ? "100%" : undefined,
+                    minWidth: isBodyScrollable ? "100%" : undefined,
                   }}
                 >
-                  {col.header}
+                  {singleHeaderTitle}
                 </th>
-              ))}
-            </tr>
-          )}
-        </thead>
-      </table>
+              </tr>
+            ) : (
+              <tr className={isBodyScrollable ? "flex w-full" : ""}>
+                {/* <tr className="table w-full table-fixed border-b-3 border-gray-300"> */}
+                {columns.map(
+                  (col, index) =>
+                    col.isShow !== false && (
+                      <th
+                        key={index}
+                        className={`font-semibold ${multiHeaderClasses} ${
+                          isBodyScrollable ? "overflow-hidden" : ""
+                        }`}
+                        style={{
+                          width: columnWidths[index],
+                          minWidth: columnWidths[index],
+                          maxWidth: columnWidths[index],
+                          boxSizing: "border-box",
+                        }}
+                        // className={`font-semibold ${multiHeaderClasses}`}
+                        // style={
+                        //   col.width
+                        //     ? { width: col.width, minWidth: col.width }
+                        //     : {}
+                        // }
+                      >
+                        {col.header}
+                      </th>
+                    )
+                )}
+              </tr>
+            )}
+          </thead>
 
-      {/* ✅ Scrollable wrapper with ID */}
-      <div
-        style={{
-          maxHeight: bodyMaxHeight,
-          overflowY: "auto",
-        }}
-        className="w-full"
-      >
-        <InfiniteScroll
-          dataLength={data.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          height={bodyMaxHeight}
-          loader={
-            loadingData && (
-              <div className="flex justify-center items-center h-10 w-full">
-                <h4>Loading...</h4>
-              </div>
-            )
-          }
-          scrollableTarget={scrollId}
-        >
-          <table
-            className="min-w-max w-full table-fixed border-collapse"
-            id={scrollId}
-          >
-            <tbody className={isBodyScrollable ? "block w-full" : ""}>
+          {isDataLoading ? (
+            <tbody className="flex justify-center items-center w-full h-full">
+              <tr className="flex justify-center items-center w-full h-full">
+                <td className="flex justify-center items-center w-full h-full">
+                  <AppSpinner width="15" height="15" />
+                </td>
+              </tr>
+            </tbody>
+          ) : (
+            <tbody>
               {size(data) === 0 ? (
-                <tr className={isBodyScrollable ? "flex w-full" : ""}>
+                <tr>
                   <td
+                    // colSpan={columns.filter((c) => c.isShow !== false).length}
                     colSpan={columnCount}
-                    className="text-center text-sm text-gray-500 py-4 font-medium capitalize"
-                    style={isBodyScrollable ? { width: "100%" } : {}}
+                    // className={
+                    //   isBodyScrollable
+                    //     ? "block overflow-y-auto w-full text-center text-sm text-gray-500 py-4 font-medium capitalize"
+                    //     : "text-center text-sm text-gray-500 py-4 font-medium capitalize"
+                    // }
+                    className="flex justify-center items-center w-full h-full text-center text-sm text-gray-500 py-4 font-medium capitalize"
                   >
-                    No data found
+                    <p className="text-center">No data found</p>
                   </td>
                 </tr>
               ) : (
-                data.map((item, rowIndex) => (
+                data?.map((item, rowIndex) => (
                   <tr
                     key={item[rowKey] || rowIndex}
                     className={
@@ -124,32 +149,45 @@ const AppDataTable = ({
                       }`
                     }
                     style={isBodyScrollable ? { width: "100%" } : {}}
+                    // key={item[rowKey] || rowIndex}
+                    // className={`border-b border-gray-100 ${
+                    //   rowStyles ? rowStyles(rowIndex) : ""
+                    // }`}
                   >
-                    {filteredColumnsData.map((col, colIndex) => (
-                      <td
-                        key={colIndex}
-                        className={`${tableBodyClasses} truncate max-w-xs ${
-                          isBodyScrollable ? "overflow-hidden" : ""
-                        }`}
-                        style={{
-                          width: columnWidths[colIndex],
-                          minWidth: columnWidths[colIndex],
-                          maxWidth: columnWidths[colIndex],
-                          boxSizing: "border-box",
-                        }}
-                      >
-                        {col.render ? col.render(item) : item[col.key]}
-                      </td>
-                    ))}
+                    {filteredColumnsData?.map(
+                      (col, colIndex) =>
+                        col.isShow !== false && (
+                          <td
+                            key={colIndex}
+                            className="py-3 px-4 truncate max-w-xs"
+                            // className={`${tableBodyClasses} truncate max-w-xs ${
+                            //   isBodyScrollable ? "overflow-hidden" : ""
+                            // }`}
+                            style={{
+                              width: columnWidths[colIndex],
+                              minWidth: columnWidths[colIndex],
+                              maxWidth: columnWidths[colIndex],
+                              boxSizing: "border-box",
+                            }}
+                            // style={
+                            //   col.width
+                            //     ? { width: col.width, minWidth: col.width }
+                            //     : {}
+                            // }
+                          >
+                            {col.render ? col.render(item) : item[col.key]}
+                          </td>
+                        )
+                    )}
                   </tr>
                 ))
               )}
             </tbody>
-          </table>
-        </InfiniteScroll>
-      </div>
+          )}
+        </table>
+      </InfiniteScroll>
     </div>
   );
 };
 
-export default memo(AppDataTable);
+export default AppDataTable;

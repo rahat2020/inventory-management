@@ -3,10 +3,13 @@ import AppModal from "../../../helpers/ui/AppModal";
 import AddProductModal from "./modals/AddProductModal";
 import AppDataTable from "../../../helpers/ui/AppDataTable";
 import { productLists } from "../../../data/productLists";
-import { useLazyGetProductsListQuery } from "../../../redux/api/productsApi";
+import {
+  useCreateProductMutation,
+  useLazyGetProductsListQuery,
+} from "../../../redux/api/productsApi";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { size } from "lodash";
-import { getStatusBadgeClasses } from "../../../utils/appHelpers";
+import { getStatusBadgeClasses, truncateText } from "../../../utils/appHelpers";
 
 // Sample product data
 const initialProducts = [
@@ -78,7 +81,9 @@ const categories = [
 export default function ProductsPage() {
   // states
   const [products, setProducts] = useState([]);
+  const [metaData, setMetaData] = useState({});
   console.log("products", products);
+  console.log("metaData", metaData);
   const [filteredProducts, setFilteredProducts] = useState(initialProducts);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -102,7 +107,10 @@ export default function ProductsPage() {
     sku: "",
   });
 
+  // redux apis
   const [triggerGetProducts, { isLoading }] = useLazyGetProductsListQuery();
+  const [productMutation, { isLoading: isLoadingCreateProduct }] =
+    useCreateProductMutation();
 
   // Filter products based on search term, category, and status
   const filterProducts = () => {
@@ -199,7 +207,7 @@ export default function ProductsPage() {
     }
 
     const product = {
-      id: products?.data?.length + 1,
+      id: products?.length + 1,
       name: newProduct.name,
       category: newProduct.category,
       price: Number.parseFloat(newProduct.price),
@@ -222,16 +230,18 @@ export default function ProductsPage() {
 
   const fetchMoreProducts = async () => {
     console.log("fetchMoreProducts");
+    setPage((prev) => prev + 1);
     const res = await triggerGetProducts({ name, status, page, limit: 10 });
-    // if (size(res?.data) < 10 || size(res?.data) === 0) {
-    //   setHasMore(false);
-    // }
+    if (size(res?.data) < 10 || size(res?.data) === 0) {
+      setHasMore(false);
+    }
 
-    console.log("fetchMoreProducts", res?.data?.data);
+    console.log("fetchMoreProducts", res?.data);
 
     if (res?.data) {
-      setProducts((prev) => [...prev?.data, ...res?.data?.data]);
-      setPage((prev) => prev + 1);
+      setProducts((prev) => [...prev, ...res?.data?.data]);
+      setMetaData((prev) => ({ ...prev, ...res?.data }));
+      // setPage((prev) => prev + 1);
     }
   };
 
@@ -251,8 +261,11 @@ export default function ProductsPage() {
         console.log("true");
         setHasMore(false);
       }
-      // if (size(res?.data) < 10 || size(res?.data) === 0) setHasMore(false);
-      if (res?.data) setProducts(res?.data?.data);
+      if (size(res?.data) < 10 || size(res?.data) === 0) setHasMore(false);
+      if (res?.data) {
+        setProducts(res?.data?.data);
+        setMetaData((prev) => ({ ...prev, ...res?.data }));
+      }
     };
 
     loadFirstPage();
@@ -271,7 +284,7 @@ export default function ProductsPage() {
       render: (data) => (
         <div className="flex justify-start items-start">
           <p className="text-start text-xs font-medium uppercase">
-            {data?.name}
+            {truncateText(data?.name || "", 30)}
           </p>
         </div>
       ),
@@ -283,7 +296,7 @@ export default function ProductsPage() {
         </p>
       ),
       key: "category",
-      width: "250px",
+      width: "300px",
       isShow: true,
       render: (data) => (
         <div className="flex justify-center items-start whitespace-nowrap">
@@ -298,7 +311,7 @@ export default function ProductsPage() {
         <p className="whitespace-nowrap uppercase text-center text-xs">sku</p>
       ),
       key: "quantity",
-      width: "150px",
+      width: "110px",
       isShow: true,
       render: (data) => (
         <div className="flex justify-center items-start whitespace-nowrap">
@@ -472,8 +485,7 @@ export default function ProductsPage() {
                   <p className="text-sm font-medium text-gray-600">In Stock</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {products &&
-                      products?.data?.filter((p) => p?.status === "in-stock")
-                        ?.length}
+                      products?.filter((p) => p?.status === "in-stock")?.length}
                   </p>
                 </div>
                 <div className="p-3 bg-green-100 rounded-full">
@@ -499,10 +511,7 @@ export default function ProductsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Low Stock</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {
-                      products?.data?.filter((p) => p?.status === "low-stock")
-                        .length
-                    }
+                    {products?.filter((p) => p?.status === "low-stock").length}
                   </p>
                 </div>
                 <div className="p-3 bg-yellow-100 rounded-full">
@@ -530,10 +539,9 @@ export default function ProductsPage() {
                     Out of Stock
                   </p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {products?.data &&
-                      products?.data?.filter(
-                        (p) => p?.status === "out-of-stock"
-                      )?.length}
+                    {products &&
+                      products?.filter((p) => p?.status === "out-of-stock")
+                        ?.length}
                   </p>
                 </div>
                 <div className="p-3 bg-red-100 rounded-full">
@@ -675,7 +683,7 @@ export default function ProductsPage() {
           <div className="bg-white rounded-lg shadow">
             <div className="px-6 py-4 border-b border-gray-200">
               <h3 className="text-lg font-medium text-gray-900">
-                Products ({size(products?.data)})
+                Products ({size(products)})
                 {/* Products ({filteredProducts.length}) */}
               </h3>
               <p className="text-sm text-gray-600">
@@ -683,18 +691,32 @@ export default function ProductsPage() {
               </p>
             </div>
 
+            {/* <AppDataTable
+              columns={columns}
+              data={products}
+              height="md:h-[calc(100vh-10.6rem)] h-[calc(100vh-13rem)]"
+              options={{
+                isInitialLoading: isLoading,
+                hasMoreData: metaData?.page < metaData?.totalPages,
+                loadMoreData: fetchMoreProducts,
+                loadingData: isLoading,
+              }}
+              width="w-full"
+            /> */}
+
             <AppDataTable
               columns={columns}
               data={products}
-              rowKey="date_time"
+              // rowKey="sku"
               isBodyScrollable={true}
               bodyMaxHeight="30rem"
+              isDataLoading={isLoading}
               multiHeaderClasses="px-4 py-1 bg-[#155DFC] text-white text-sm"
+              tableBodyClasses="py-2 px-1"
               rowStyles={(index) => (index % 2 === 0 ? "" : "bg-gray-50")}
-              scrollId="data-table-scrollable-div"
-              fetchMoreData={fetchMoreProducts}
-              hasMore={hasMore}
               options={{
+                loadMoreData: fetchMoreProducts,
+                hasMoreData: metaData?.page < metaData?.totalPages,
                 loadingData: isLoading,
               }}
             />
@@ -708,7 +730,7 @@ export default function ProductsPage() {
         cancelLabel="CANCEL"
         showSaveBtn
         modalSize="max-w-lg"
-        onConfirm={() => alert("Data updated!")}
+        onConfirm={() => handleCreateProduct()}
         onCancel={() => setIsCreateModalOpen(false)}
       >
         <div className="">

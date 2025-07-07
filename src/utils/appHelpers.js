@@ -49,3 +49,45 @@ export const getStatusBadgeClasses = (status) => {
       return `${baseClasses} bg-gray-100 text-gray-800`;
   }
 };
+
+export const getRoundedClasses = (roundedValue) => {
+  const classesLists = {
+    sm: "rounded-sm",
+    md: "rounded-md",
+    lg: "rounded-lg",
+    xl: "rounded-xl",
+    "2xl": "rounded-2xl",
+    "t-sm": "rounded-t-sm",
+    "t-md": "rounded-t-md",
+    "t-lg": "rounded-t-lg",
+    "t-xl": "rounded-t-xl",
+    "t-2xl": "rounded-t-2xl",
+    "tl-sm": "rounded-tl-sm",
+    "tl-md": "rounded-tl-md",
+    "tl-lg": "rounded-tl-lg",
+    "tl-xl": "rounded-tl-xl",
+    "tl-2xl": "rounded-tl-2xl",
+    "tr-sm": "rounded-tr-sm",
+    "tr-md": "rounded-tr-md",
+    "tr-lg": "rounded-tr-lg",
+    "tr-xl": "rounded-tr-xl",
+    "tr-2xl": "rounded-tr-2xl",
+    "b-sm": "rounded-b-sm",
+    "b-md": "rounded-b-md",
+    "b-lg": "rounded-b-lg",
+    "b-xl": "rounded-b-xl",
+    "b-2xl": "rounded-b-2xl",
+    "bl-sm": "rounded-bl-sm",
+    "bl-md": "rounded-bl-md",
+    "bl-lg": "rounded-bl-lg",
+    "bl-xl": "rounded-bl-xl",
+    "bl-2xl": "rounded-bl-2xl",
+    "br-sm": "rounded-br-sm",
+    "br-md": "rounded-br-md",
+    "br-lg": "rounded-br-lg",
+    "br-xl": "rounded-br-xl",
+    "br-2xl": "rounded-br-2xl",
+  };
+
+  return classesLists[roundedValue] || "";
+};

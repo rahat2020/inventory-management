@@ -34,16 +34,19 @@ export const productsApi = createApi({
     }),
 
     // create invoice
-    // createInvoice: builder.mutation({
-    //   query: (data) => ({
-    //     url: "/pi-issue/store",
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    //   invalidatesTags: ["products"],
-    // }),
+    createProduct: builder.mutation({
+      query: (data) => ({
+        url: "/add-product",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["products"],
+    }),
   }),
 });
 
-export const { useLazyGetProductsListQuery, useGetSingleProductQuery } =
-  productsApi;
+export const {
+  useLazyGetProductsListQuery,
+  useGetSingleProductQuery,
+  useCreateProductMutation,
+} = productsApi;

@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, HelpCircle } from "react-feather";
+import AppSpinner from "../helpers/ui/AppSpinner";
 
 const NotFound = ({
   title = "No data found",
   message = "We couldn't find any data matching your criteria.",
   actionLabel = "Go back",
   onAction,
+  spinnerClass = "",
   isLoading = false,
 }) => {
   const [loading, setLoading] = useState(isLoading);
@@ -20,6 +22,14 @@ const NotFound = ({
       navigate(-1);
     }
   };
+
+  if (loading) {
+    return (
+      <div className={spinnerClass}>
+        <AppSpinner />
+      </div>
+    );
+  }
 
   return (
     <div>

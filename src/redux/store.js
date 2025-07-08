@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { invoicesApi } from "./api/invoicesApi";
 import { productsApi } from "./api/productsApi";
+import { categoriesApi } from "./api/categoriesApi";
 
 const persistConfig = {
   key: "root",
@@ -17,13 +18,18 @@ const store = configureStore({
     app: persistedReducer,
     [invoicesApi.reducerPath]: invoicesApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
+    [categoriesApi.reducerPath]: categoriesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
-    }).concat(invoicesApi.middleware, productsApi.middleware),
+    }).concat(
+      invoicesApi.middleware,
+      productsApi.middleware,
+      categoriesApi.middleware
+    ),
 });
 
 export const persistor = persistStore(store);

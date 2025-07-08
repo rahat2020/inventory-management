@@ -26,7 +26,7 @@ const AppDataTable = ({
     () => columns.filter((c) => c.isShow !== false).length,
     [columns]
   );
-  console.log("isBodyScrollable", isBodyScrollable);
+
   const filteredColumnsData = columns?.filter((item) => item.isShow !== false);
 
   // For width handling, create array of widths

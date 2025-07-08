@@ -82,8 +82,6 @@ export default function ProductsPage() {
   // states
   const [products, setProducts] = useState([]);
   const [metaData, setMetaData] = useState({});
-  console.log("products", products);
-  console.log("metaData", metaData);
   const [filteredProducts, setFilteredProducts] = useState(initialProducts);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -729,7 +727,7 @@ export default function ProductsPage() {
         title="ADD PRODUCT"
         cancelLabel="CANCEL"
         showSaveBtn
-        modalSize="max-w-lg"
+        modalSize="max-w-2xl"
         onConfirm={() => handleCreateProduct()}
         onCancel={() => setIsCreateModalOpen(false)}
       >

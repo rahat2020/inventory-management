@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
+import { size } from "lodash";
 import AppModal from "../../../helpers/ui/AppModal";
 import AddProductModal from "./modals/AddProductModal";
 import AppDataTable from "../../../helpers/ui/AppDataTable";
-import { productLists } from "../../../data/productLists";
+import { getStatusBadgeClasses, truncateText } from "../../../utils/appHelpers";
+s;
 import {
   useCreateProductMutation,
   useLazyGetProductsListQuery,
 } from "../../../redux/api/productsApi";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { size } from "lodash";
-import { getStatusBadgeClasses, truncateText } from "../../../utils/appHelpers";
 
 // Sample product data
 const initialProducts = [

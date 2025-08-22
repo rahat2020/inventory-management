@@ -51,8 +51,6 @@ const AppDropdown = ({
       opt?.label?.toLowerCase().includes(searchTerm?.toLowerCase())
     );
   }, [searchTerm, items]);
-  console.log("filteredItems", filteredItems);
-  console.log("items", items);
 
   // Handle click outside to close dropdown
   useClickOutside(dropdownRef, () => {

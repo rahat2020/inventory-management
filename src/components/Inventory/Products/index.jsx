@@ -4,7 +4,6 @@ import AppModal from "../../../helpers/ui/AppModal";
 import AddProductModal from "./modals/AddProductModal";
 import AppDataTable from "../../../helpers/ui/AppDataTable";
 import { getStatusBadgeClasses, truncateText } from "../../../utils/appHelpers";
-s;
 import {
   useCreateProductMutation,
   useLazyGetProductsListQuery,

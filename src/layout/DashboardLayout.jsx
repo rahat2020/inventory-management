@@ -13,12 +13,10 @@ const DashboardLayout = () => {
             <Sidebar />
           </div>
           {/* Main Scrollable Content */}
-          <main className=" w-6/6 overflow-auto overflow-x-hidden">
+          <main className="w-6/6 overflow-auto overflow-x-hidden">
             <Outlet />
           </main>
         </div>
-        {/* Footer */}
-        {/* <AppFooter /> */}
       </div>
     </>
   );

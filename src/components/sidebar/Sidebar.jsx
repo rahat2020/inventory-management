@@ -9,6 +9,7 @@ import {
   FileText,
   Home,
   Menu,
+  MessageCircle,
   Package,
   Settings,
   ShoppingCart,
@@ -26,6 +27,7 @@ const navigationData = [
     title: "Overview",
     items: [
       { title: "Dashboard", icon: Home, href: "/" },
+      { title: "AI Chat", icon: MessageCircle, href: "/ai-chat" },
       { title: "Analytics", icon: Activity, href: "/analytics" },
     ],
   },

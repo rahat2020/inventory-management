@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/sidebar/Sidebar";
 import AppFooter from "../components/AppFooter/AppFooter";
+import FloatingChat from "../components/Chat/FloatingChat";
 
 const DashboardLayout = () => {
   return (
@@ -13,10 +14,13 @@ const DashboardLayout = () => {
             <Sidebar />
           </div>
           {/* Main Scrollable Content */}
-          <main className="w-6/6 overflow-auto overflow-x-hidden">
+          <main className="w-6/6 overflow-auto overflow-x-hidden relative">
             <Outlet />
           </main>
         </div>
+        
+        {/* Floating Chatbot */}
+        <FloatingChat />
       </div>
     </>
   );

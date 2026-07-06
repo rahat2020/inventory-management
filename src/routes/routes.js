@@ -4,6 +4,7 @@ import ProductsPage from "../components/Inventory/Products";
 import StockLevelsPage from "../components/Inventory/StockLevels";
 import AllOrdersPage from "../components/Orders/AllOrders";
 import SettingsPage from "../components/Settings";
+import ChatPage from "../components/Chat/ChatPage";
 
 const routes = [
   { path: "/", name: "Home", element: DashboardPage },
@@ -14,7 +15,10 @@ const routes = [
 
   // orders
   { path: "/all-orders", name: "All-Orders", element: AllOrdersPage },
+  // AI Chat
+  { path: "/ai-chat", name: "AI Chat", element: ChatPage },
   // settings
   { path: "/settings", name: "Settings", element: SettingsPage },
 ];
 export default routes;
+

@@ -348,6 +348,9 @@
 }
 
 .result-update {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   color: #059669;
   font-weight: 500;
 }
@@ -484,3 +487,47 @@
     height: 480px;
   }
 }
+
+.error-avatar {
+  background: #ef4444;
+  color: #fff;
+}
+
+.chat-error-card-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.chat-error-card-inline strong {
+  color: #7f1d1d;
+}
+
+.chat-error-card-inline button {
+  align-self: flex-start;
+  border: 0;
+  border-radius: 7px;
+  padding: 6px 10px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-error-card-inline button:hover {
+  background: #b91c1c;
+}
+
+.result-error {
+  color: #dc2626;
+}
+
+

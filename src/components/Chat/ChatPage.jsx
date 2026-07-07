@@ -1,5 +1,5 @@
 import { useChat } from "@ai-sdk/react";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useMemo, useCallback, useState } from "react";
 import {
   MessageSquare,
   Send,
@@ -10,8 +10,16 @@ import {
   Search,
   Edit3,
   Loader,
+  AlertTriangle,
 } from "react-feather";
 import "./ChatPage.css";
+import {
+  createChatTransport,
+  getErrorMessage,
+  getMessageText,
+  getToolParts,
+  hasStreamingText,
+} from "./chatUtils";
 
 const suggestedPrompts = [
   {
@@ -34,12 +42,39 @@ const suggestedPrompts = [
     text: "Which products are out of stock?",
     color: "#f59e0b",
   },
+  {
+    icon: User,
+    text: "Show me all pending orders",
+    color: "#ec4899",
+  },
+  {
+    icon: Package,
+    text: "What are the incoming stock movements?",
+    color: "#14b8a6",
+  },
+  {
+    icon: Search,
+    text: "Show all active customers and suppliers",
+    color: "#f97316",
+  },
+  {
+    icon: RefreshCw,
+    text: "Generate a comprehensive inventory report",
+    color: "#8b5cf6",
+  },
+  {
+    icon: Package,
+    text: "Seed 20 demo products and categories",
+    color: "#ef4444",
+  },
 ];
 
 const ChatPage = () => {
   const [input, setInput] = useState("");
+  const chatTransport = useMemo(() => createChatTransport(), []);
   const {
     messages,
+    setMessages,
     sendMessage,
     regenerate,
     clearError,
@@ -47,13 +82,50 @@ const ChatPage = () => {
     error,
     status,
   } = useChat({
-    api: "http://localhost:5000/api/chat",
+    transport: chatTransport,
   });
 
   const isLoading = status === "submitted" || status === "streaming";
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [chatError, setChatError] = useState("");
+  const failedPromptRef = useRef("");
+  const failedMessageCountRef = useRef(0);
+
+  const clearChatError = useCallback(() => {
+    setChatError("");
+    clearError();
+  }, [clearError]);
+
+  const cancelFailedPrompt = useCallback(
+    (requestError) => {
+      const message = getErrorMessage(requestError);
+      const failedPrompt = failedPromptRef.current;
+      const failedMessageCount = failedMessageCountRef.current;
+
+      setChatError(message);
+      setIsTyping(false);
+
+      if (failedPrompt) {
+        setInput((currentInput) => currentInput || failedPrompt);
+      }
+
+      setMessages((currentMessages) =>
+        currentMessages.slice(0, failedMessageCount)
+      );
+
+      failedPromptRef.current = "";
+      failedMessageCountRef.current = 0;
+    },
+    [setMessages]
+  );
+
+  useEffect(() => {
+    if (error) {
+      cancelFailedPrompt(error);
+    }
+  }, [error, cancelFailedPrompt]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -71,9 +143,16 @@ const ChatPage = () => {
 
   const handleSubmit = (e) => {
     e?.preventDefault();
-    if (!input.trim() || isLoading) return;
-    sendMessage({ text: input });
+
+    const prompt = input.trim();
+    if (!prompt || isLoading) return;
+
+    failedPromptRef.current = prompt;
+    failedMessageCountRef.current = messages.length;
+    clearChatError();
     setInput("");
+
+    sendMessage({ text: prompt }).catch(cancelFailedPrompt);
   };
 
   const handleKeyDown = async (e) => {
@@ -128,6 +207,55 @@ const ChatPage = () => {
     return formatted;
   };
 
+  const isToolComplete = (tool) =>
+    tool.state === "result" || tool.state === "output-available";
+
+  const getToolLabel = (tool) => {
+    const complete = isToolComplete(tool);
+
+    if (tool.toolName === "checkInventory") {
+      return complete ? "Inventory Search Complete" : "Searching Inventory...";
+    }
+
+    if (tool.toolName === "updateStock") {
+      return complete ? "Stock Update Complete" : "Updating Stock...";
+    }
+
+    if (tool.toolName === "seedDemoInventory") {
+      return complete ? "Demo Data Seeded" : "Seeding Demo Data...";
+    }
+
+    if (tool.toolName === "checkOrders") {
+      return complete ? "Orders Retrieved" : "Fetching Orders...";
+    }
+
+    if (tool.toolName === "checkStockLevels") {
+      return complete ? "Stock Levels Retrieved" : "Checking Stock Levels...";
+    }
+
+    if (tool.toolName === "checkIncoming") {
+      return complete ? "Incoming Stock Retrieved" : "Checking Incoming Stock...";
+    }
+
+    if (tool.toolName === "checkOutgoing") {
+      return complete ? "Outgoing Stock Retrieved" : "Checking Outgoing Stock...";
+    }
+
+    if (tool.toolName === "checkSuppliers") {
+      return complete ? "Supplier Data Retrieved" : "Fetching Supplier Data...";
+    }
+
+    if (tool.toolName === "checkCustomers") {
+      return complete ? "Customer Data Retrieved" : "Fetching Customer Data...";
+    }
+
+    if (tool.toolName === "generateReport") {
+      return complete ? "Report Generated" : "Generating Report...";
+    }
+
+    return complete ? "Tool Complete" : "Executing Tool...";
+  };
+
   return (
     <div className="chat-page">
       {/* Header */}
@@ -139,23 +267,23 @@ const ChatPage = () => {
           <div>
             <h1 className="chat-header-title">Inventory AI Assistant</h1>
             <p className="chat-header-subtitle">
-              Powered by Google Gemini • Real-time database access
+              Powered by Google Gemini - Real-time database access
             </p>
           </div>
         </div>
         <div className="chat-header-right">
           <div
-            className={`chat-status ${isLoading ? "chat-status-busy" : "chat-status-online"}`}
+            className={`chat-status ${chatError ? "chat-status-busy" : isLoading ? "chat-status-busy" : "chat-status-online"}`}
           >
             <span className="chat-status-dot" />
-            {isLoading ? "Processing..." : "Online"}
+            {chatError ? "Error" : isLoading ? "Processing..." : "Online"}
           </div>
         </div>
       </div>
 
       {/* Messages Area */}
       <div className="chat-messages-container">
-        {messages.length === 0 ? (
+        {messages.length === 0 && !chatError ? (
           <div className="chat-welcome">
             <div className="chat-welcome-icon-wrapper">
               <div className="chat-welcome-icon">
@@ -218,25 +346,23 @@ const ChatPage = () => {
                   <div
                     className="chat-message-text"
                     dangerouslySetInnerHTML={{
-                      __html: formatContent(message.content),
+                      __html: formatContent(getMessageText(message)),
                     }}
                   />
 
                   {/* Show tool invocations */}
-                  {message.toolInvocations?.map((tool, idx) => (
+                  {getToolParts(message).map((tool, idx) => (
                     <div key={idx} className="chat-tool-card">
                       <div className="chat-tool-header">
                         <Zap size={14} />
                         <span>
-                          {tool.toolName === "checkInventory"
-                            ? "Searching Inventory..."
-                            : "Updating Stock..."}
+                          {getToolLabel(tool)}
                         </span>
                       </div>
-                      {tool.state === "result" && (
+                      {isToolComplete(tool) ? (
                         <div className="chat-tool-result">
-                          {tool.toolName === "checkInventory" &&
-                            tool.result?.found && (
+                          {tool.toolName === "checkInventory" && (
+                            tool.result?.found ? (
                               <div className="chat-inventory-results">
                                 <div className="chat-result-badge">
                                   {tool.result.count} product(s) found
@@ -264,7 +390,17 @@ const ChatPage = () => {
                                   ))}
                                 </div>
                               </div>
-                            )}
+                            ) : (
+                              <div className="chat-update-result chat-update-fail">
+                                {tool.result?.message || tool.result?.error || "No products found."}
+                                {tool.result?.suggestions && (
+                                  <div className="chat-updated-product">
+                                    {tool.result.suggestions}
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          )}
                           {tool.toolName === "updateStock" && (
                             <div
                               className={`chat-update-result ${
@@ -273,21 +409,47 @@ const ChatPage = () => {
                                   : "chat-update-fail"
                               }`}
                             >
-                              {tool.result?.success ? "✅" : "❌"}{" "}
-                              {tool.result?.message}
+                              {tool.result?.success ? "Success:" : "Failed:"}{" "}
+                              {tool.result?.message || tool.result?.error || "Stock update failed."}
                               {tool.result?.product && (
                                 <div className="chat-updated-product">
-                                  <strong>{tool.result.product.name}</strong> —
+                                  <strong>{tool.result.product.name}</strong> -
                                   New Qty: {tool.result.product.newQuantity} |
                                   Status: {tool.result.product.status}
                                 </div>
                               )}
                             </div>
                           )}
+                          {tool.toolName === "seedDemoInventory" && (
+                            <div
+                              className={`chat-update-result ${
+                                tool.result?.success
+                                  ? "chat-update-success"
+                                  : "chat-update-fail"
+                              }`}
+                            >
+                              {tool.result?.success ? "Success:" : "Failed:"}{" "}
+                              {tool.result?.message || tool.result?.error || "Demo data seed failed."}
+                              {tool.result?.success && (
+                                <div className="chat-updated-product">
+                                  Products: {tool.result.productsSeeded} | Created: {tool.result.productsCreated} | Updated: {tool.result.productsUpdated} | Categories: {tool.result.categoriesSeeded}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ) : null}
+                      {tool.state === "output-error" && (
+                        <div className="chat-tool-result">
+                          <div className="chat-update-result chat-update-fail">
+                            {tool.errorText || "Tool execution failed"}
+                          </div>
                         </div>
                       )}
-                      {tool.state !== "result" && (
-                        <div className="chat-tool-loading">
+                      {tool.state !== "result" &&
+                        tool.state !== "output-available" &&
+                        tool.state !== "output-error" && (
+                          <div className="chat-tool-loading">
                           <Loader size={14} className="chat-spin" />
                           <span>Executing...</span>
                         </div>
@@ -299,7 +461,7 @@ const ChatPage = () => {
             ))}
 
             {/* Typing indicator */}
-            {isTyping && !messages[messages.length - 1]?.content && (
+            {isTyping && !hasStreamingText(messages[messages.length - 1]) && (
               <div className="chat-message chat-message-assistant">
                 <div className="chat-message-avatar">
                   <div className="chat-avatar chat-avatar-bot">
@@ -310,6 +472,26 @@ const ChatPage = () => {
                   <span></span>
                   <span></span>
                   <span></span>
+                </div>
+              </div>
+            )}
+
+            {chatError && (
+              <div className="chat-message chat-message-assistant">
+                <div className="chat-message-avatar">
+                  <div className="chat-avatar chat-avatar-bot chat-avatar-error">
+                    <AlertTriangle size={16} />
+                  </div>
+                </div>
+                <div className="chat-message-content">
+                  <div className="chat-message-role">Request failed</div>
+                  <div className="chat-error-card">
+                    <strong>Prompt cancelled.</strong>
+                    <span>{chatError}</span>
+                    <button type="button" onClick={clearChatError}>
+                      Dismiss
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -331,7 +513,10 @@ const ChatPage = () => {
               ref={inputRef}
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                if (chatError) clearChatError();
+                setInput(e.target.value);
+              }}
               onKeyDown={handleKeyDown}
               placeholder="Ask about inventory, stock levels, or products..."
               className="chat-input"
@@ -363,8 +548,8 @@ const ChatPage = () => {
               </button>
             </div>
           </div>
-          <p className="chat-input-hint">
-            AI can search and update your live inventory database in real-time
+          <p className={`chat-input-hint ${chatError ? "chat-input-error" : ""}`}>
+            {chatError ? "Prompt restored. Fix the issue or edit the prompt, then try again." : "AI can search and update your live inventory database in real-time"}
           </p>
         </form>
       </div>
@@ -373,3 +558,18 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

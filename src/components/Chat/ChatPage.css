@@ -1,5 +1,5 @@
-/* =============================================
-   CHAT PAGE — Premium Glassmorphic Design
+﻿/* =============================================
+   CHAT PAGE â€” Premium Glassmorphic Design
    ============================================= */
 
 .chat-page {
@@ -751,4 +751,51 @@
   .chat-welcome-description {
     font-size: 0.85rem;
   }
+}
+
+.chat-avatar-error {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.chat-error-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 560px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(254, 242, 242, 0.96);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  color: #991b1b;
+  line-height: 1.5;
+  box-shadow: 0 8px 22px rgba(239, 68, 68, 0.08);
+}
+
+.chat-error-card strong {
+  font-size: 0.88rem;
+  color: #7f1d1d;
+}
+
+.chat-error-card span {
+  font-size: 0.82rem;
+}
+
+.chat-error-card button {
+  align-self: flex-start;
+  border: 0;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-error-card button:hover {
+  background: #b91c1c;
+}
+
+.chat-input-error {
+  color: #dc2626;
 }

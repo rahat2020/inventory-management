@@ -1,5 +1,5 @@
 import { useChat } from "@ai-sdk/react";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useMemo, useCallback, useState } from "react";
 import {
   MessageSquare,
   Send,
@@ -10,11 +10,19 @@ import {
   Search,
   Edit3,
   Loader,
+  AlertTriangle,
   MessageCircle,
   X,
   Minus,
 } from "react-feather";
 import "./FloatingChat.css";
+import {
+  createChatTransport,
+  getErrorMessage,
+  getMessageText,
+  getToolParts,
+  hasStreamingText,
+} from "./chatUtils";
 
 const suggestedPrompts = [
   {
@@ -37,27 +45,69 @@ const suggestedPrompts = [
     text: "Which products are out of stock?",
     color: "#f59e0b",
   },
+  {
+    icon: Package,
+    text: "Seed 20 demo products and categories",
+    color: "#ef4444",
+  },
 ];
 
 const FloatingChat = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
   const [input, setInput] = useState("");
-
+  const chatTransport = useMemo(() => createChatTransport(), []);
+  const [chatError, setChatError] = useState("");
+  const failedPromptRef = useRef("");
+  const failedMessageCountRef = useRef(0);
   const {
     messages,
+    setMessages,
     sendMessage,
     clearError,
     stop,
     error,
     status,
   } = useChat({
-    api: "http://localhost:5000/api/chat",
+    transport: chatTransport,
   });
 
   const isLoading = status === "submitted" || status === "streaming";
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  const clearChatError = useCallback(() => {
+    setChatError("");
+    clearError();
+  }, [clearError]);
+
+  const cancelFailedPrompt = useCallback(
+    (requestError) => {
+      const message = getErrorMessage(requestError);
+      const failedPrompt = failedPromptRef.current;
+      const failedMessageCount = failedMessageCountRef.current;
+
+      setChatError(message);
+
+      if (failedPrompt) {
+        setInput((currentInput) => currentInput || failedPrompt);
+      }
+
+      setMessages((currentMessages) =>
+        currentMessages.slice(0, failedMessageCount)
+      );
+
+      failedPromptRef.current = "";
+      failedMessageCountRef.current = 0;
+    },
+    [setMessages]
+  );
+
+  useEffect(() => {
+    if (error) {
+      cancelFailedPrompt(error);
+    }
+  }, [error, cancelFailedPrompt]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -74,9 +124,16 @@ const FloatingChat = () => {
 
   const handleSubmit = (e) => {
     e?.preventDefault();
-    if (!input.trim() || isLoading) return;
-    sendMessage({ text: input });
+
+    const prompt = input.trim();
+    if (!prompt || isLoading) return;
+
+    failedPromptRef.current = prompt;
+    failedMessageCountRef.current = messages.length;
+    clearChatError();
     setInput("");
+
+    sendMessage({ text: prompt }).catch(cancelFailedPrompt);
   };
 
   const handleKeyDown = async (e) => {
@@ -124,6 +181,27 @@ const FloatingChat = () => {
       .replace(/\n/g, "<br/>");
   };
 
+  const isToolComplete = (tool) =>
+    tool.state === "result" || tool.state === "output-available";
+
+  const getToolLabel = (tool) => {
+    const complete = isToolComplete(tool);
+
+    if (tool.toolName === "checkInventory") {
+      return complete ? "Inventory Search Complete" : "Searching Database...";
+    }
+
+    if (tool.toolName === "updateStock") {
+      return complete ? "Stock Update Complete" : "Updating Stock...";
+    }
+
+    if (tool.toolName === "seedDemoInventory") {
+      return complete ? "Demo Data Seeded" : "Seeding Demo Data...";
+    }
+
+    return complete ? "Tool Complete" : "Executing Tool...";
+  };
+
   const toggleChat = () => {
     setIsOpen(!isOpen);
     if (!isOpen) {
@@ -155,7 +233,7 @@ const FloatingChat = () => {
               <div>
                 <h3>Inventory AI</h3>
                 <span className="status-text">
-                  {isLoading ? "Typing..." : "Online"}
+                  {chatError ? "Error" : isLoading ? "Typing..." : "Online"}
                 </span>
               </div>
             </div>
@@ -168,7 +246,7 @@ const FloatingChat = () => {
 
           {/* Messages */}
           <div className="floating-chat-messages">
-            {messages.length === 0 ? (
+            {messages.length === 0 && !chatError ? (
               <div className="chat-welcome-view">
                 <div className="welcome-logo">
                   <MessageCircle size={32} />
@@ -203,57 +281,81 @@ const FloatingChat = () => {
                       <div
                         className="text-content"
                         dangerouslySetInnerHTML={{
-                          __html: formatContent(message.content),
+                          __html: formatContent(getMessageText(message)),
                         }}
                       />
 
                       {/* Tool Invocations */}
-                      {message.toolInvocations?.map((tool, idx) => (
+                      {getToolParts(message).map((tool, idx) => (
                         <div key={idx} className="tool-card">
                           <div className="tool-header">
                             <Zap size={12} />
                             <span>
-                              {tool.toolName === "checkInventory"
-                                ? "Searching Database..."
-                                : "Updating Stock..."}
+                              {getToolLabel(tool)}
                             </span>
                           </div>
-                          {tool.state === "result" && (
+                          {isToolComplete(tool) ? (
                             <div className="tool-result">
-                              {tool.toolName === "checkInventory" && tool.result?.found && (
-                                <div className="result-products">
-                                  {tool.result.products?.slice(0, 5).map((p, i) => (
-                                    <div key={i} className="product-row">
-                                      <div className="product-row-name">{p.name}</div>
-                                      <div className="product-row-meta">
-                                        <span>SKU: {p.sku}</span>
-                                        <span className="qty-tag">Qty: {p.quantity}</span>
+                              {tool.toolName === "checkInventory" && (
+                                tool.result?.found ? (
+                                  <div className="result-products">
+                                    {tool.result.products?.slice(0, 5).map((p, i) => (
+                                      <div key={i} className="product-row">
+                                        <div className="product-row-name">{p.name}</div>
+                                        <div className="product-row-meta">
+                                          <span>SKU: {p.sku}</span>
+                                          <span className="qty-tag">Qty: {p.quantity}</span>
+                                        </div>
                                       </div>
-                                    </div>
-                                  ))}
-                                  {tool.result.products?.length > 5 && (
-                                    <div className="more-products">
-                                      + {tool.result.products.length - 5} more products
-                                    </div>
-                                  )}
-                                </div>
+                                    ))}
+                                    {tool.result.products?.length > 5 && (
+                                      <div className="more-products">
+                                        + {tool.result.products.length - 5} more products
+                                      </div>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <div className="result-update result-error">
+                                    <span>{tool.result?.message || tool.result?.error || "No products found."}</span>
+                                    {tool.result?.suggestions && <span>{tool.result.suggestions}</span>}
+                                  </div>
+                                )
                               )}
                               {tool.toolName === "updateStock" && (
-                                <div className="result-update">
+                                <div className={`result-update ${tool.result?.success ? "" : "result-error"}`}>
                                   {tool.result?.success ? (
                                     <span>
                                       Updated <strong>{tool.result.product?.name}</strong> to{" "}
                                       {tool.result.product?.newQuantity}
                                     </span>
                                   ) : (
-                                    <span>{tool.result?.message}</span>
+                                    <span>{tool.result?.message || tool.result?.error || "Stock update failed."}</span>
+                                  )}
+                                </div>
+                              )}
+                              {tool.toolName === "seedDemoInventory" && (
+                                <div className={`result-update ${tool.result?.success ? "" : "result-error"}`}>
+                                  <span>{tool.result?.message || tool.result?.error || "Demo data seed failed."}</span>
+                                  {tool.result?.success && (
+                                    <span>
+                                      Products: {tool.result.productsSeeded} | Created: {tool.result.productsCreated} | Updated: {tool.result.productsUpdated} | Categories: {tool.result.categoriesSeeded}
+                                    </span>
                                   )}
                                 </div>
                               )}
                             </div>
+                          ) : null}
+                          {tool.state === "output-error" && (
+                            <div className="tool-result">
+                              <div className="result-update result-error">
+                                {tool.errorText || "Tool execution failed"}
+                              </div>
+                            </div>
                           )}
-                          {tool.state !== "result" && (
-                            <div className="tool-loader">
+                          {tool.state !== "result" &&
+                            tool.state !== "output-available" &&
+                            tool.state !== "output-error" && (
+                              <div className="tool-loader">
                               <Loader size={12} className="spin" />
                               <span>Executing...</span>
                             </div>
@@ -263,7 +365,7 @@ const FloatingChat = () => {
                     </div>
                   </div>
                 ))}
-                {isLoading && !messages[messages.length - 1]?.content && (
+                {isLoading && !hasStreamingText(messages[messages.length - 1]) && (
                   <div className="message-bubble bot-bubble">
                     <div className="bubble-avatar">
                       <Loader size={12} className="spin" />
@@ -272,6 +374,22 @@ const FloatingChat = () => {
                       <span></span>
                       <span></span>
                       <span></span>
+                    </div>
+                  </div>
+                )}
+                {chatError && (
+                  <div className="message-bubble bot-bubble error-bubble">
+                    <div className="bubble-avatar error-avatar">
+                      <AlertTriangle size={12} />
+                    </div>
+                    <div className="bubble-content">
+                      <div className="chat-error-card-inline">
+                        <strong>Prompt cancelled.</strong>
+                        <span>{chatError}</span>
+                        <button type="button" onClick={clearChatError}>
+                          Dismiss
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -291,7 +409,10 @@ const FloatingChat = () => {
                 ref={inputRef}
                 type="text"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  if (chatError) clearChatError();
+                  setInput(e.target.value);
+                }}
                 onKeyDown={handleKeyDown}
                 placeholder="Message AI Assistant..."
                 className="chat-input-field"
@@ -313,3 +434,16 @@ const FloatingChat = () => {
 };
 
 export default FloatingChat;
+
+
+
+
+
+
+
+
+
+
+
+
+

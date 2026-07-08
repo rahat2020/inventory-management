@@ -10,10 +10,91 @@ export const formatShortTime = (date) => {
   });
 };
 
+export const getFocusColor = (showFocus, focused) => {
+  if (!showFocus) return "";
+  return focused ? "ring-2 ring-blue-500" : "";
+};
+
+export const formatRelativeTime = (date) => {
+  const dt = date instanceof Date ? date : new Date(date);
+  const diffSeconds = Math.round((Date.now() - dt.getTime()) / 1000);
+
+  if (diffSeconds < 60) return "just now";
+  const diffMinutes = Math.round(diffSeconds / 60);
+  if (diffMinutes < 60)
+    return `${diffMinutes} min${diffMinutes === 1 ? "" : "s"} ago`;
+  const diffHours = Math.round(diffMinutes / 60);
+  if (diffHours < 24) return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
+  const diffDays = Math.round(diffHours / 24);
+  if (diffDays < 30) return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
+  return dt.toLocaleDateString();
+};
+
+export const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(Number(value) || 0);
+
+export const formatCompactNumber = (value) =>
+  new Intl.NumberFormat("en-US", { notation: "compact" }).format(
+    Number(value) || 0,
+  );
+
+export const getOptions = (label) => {
+  const optionsMap = {
+    COMPANY: ["CROWN WOOL WEAR LTD.", "ELITE TEXTILES", "Manha Accessories"],
+    "COMPANY NAME": [
+      "CROWN WOOL WEAR LTD.",
+      "ELITE TEXTILES",
+      "Manha Accessories",
+    ],
+    COUNTRY: ["BANGLADESH", "CHINA", "INDIA", "VIETNAM"],
+    CITY: ["DHAKA", "GAZIPUR", "SUZHOU", "CHITTAGONG"],
+    INDUSTRY: ["TEXTILE", "APPAREL", "MANUFACTURING", "PRINTING"],
+    SUPPLIER: ["MANUFACTURER", "SUPPLIER", "WASHING & DYEING", "PRINTING"],
+    "PRODUCT TYPE": ["APPAREL", "TEXTILE", "ACCESSORIES", "PACKAGING"],
+    ASSIGN: ["ASSIGNED", "UNASSIGNED", "PENDING"],
+    LISTED: ["LISTED", "UNLISTED", "PENDING"],
+  };
+
+  return optionsMap[label] || [];
+};
+
+export const handleMoveHeighlight = (
+  direction,
+  setHighlightedIndex,
+  filteredOptions,
+) => {
+  if (!filteredOptions.length) return;
+  setHighlightedIndex((prev) => {
+    const nextIndex =
+      direction === "down"
+        ? (prev + 1) % filteredOptions.length
+        : (prev - 1 + filteredOptions.length) % filteredOptions.length;
+    return nextIndex;
+  });
+};
+
+export function getSearchData(items, searchText, searchFields = []) {
+  if (!size(items)) return [];
+  if (!searchText) return items;
+
+  return items?.filter((item) =>
+    searchFields.some((path) => {
+      const value = path.split(".").reduce((obj, key) => obj?.[key], item);
+      return (value?.toString().toLowerCase() || "").includes(
+        searchText.toLowerCase(),
+      );
+    }),
+  );
+}
+
 export const truncateText = (text, maxLength, ellipsis = "...") => {
   if (typeof text !== "string" || typeof maxLength !== "number") {
     console.error(
-      "Invalid arguments for truncateText: text must be a string and maxLength must be a number."
+      "Invalid arguments for truncateText: text must be a string and maxLength must be a number.",
     );
     return text;
   }

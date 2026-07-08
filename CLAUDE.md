@@ -32,12 +32,14 @@ vars to the client (`src/config/api.js` reads `import.meta.env.VITE_API_BASE_URL
 
 ## Structure
 
+- Act like sinior software developer when doing any task maintain production grade, optimize, test able and developer friendly and scalable codes.
+
 - `src/App.jsx` — top-level `<Routes>`. Every route is wrapped in its own
   `<ErrorBoundary FallbackComponent={FallbackErrorUI}>` so one page crashing
   doesn't take down the shell. NProgress start/done fires on every location
   change.
 - `src/routes/routes.js` — the single source of truth for pages: `{ path,
-  name, element }[]`, consumed by `App.jsx`. Add new pages here, not as
+name, element }[]`, consumed by `App.jsx`. Add new pages here, not as
   scattered `<Route>` JSX.
 - `src/layout/DashboardLayout.jsx` — persistent chrome: `Sidebar` +
   scrollable `<Outlet/>` + `FloatingChat` (chat widget is global, mounted
@@ -67,14 +69,15 @@ vars to the client (`src/config/api.js` reads `import.meta.env.VITE_API_BASE_URL
 ## AI chat
 
 Two entry points into the same backend (`POST /api/chat`, streaming):
+
 - `src/components/Chat/FloatingChat.jsx` — global widget mounted in
   `DashboardLayout`, always available.
 - `src/components/Chat/ChatPage.jsx` — full page at `/ai-chat`.
-Both use `@ai-sdk/react`'s `useChat` hook; shared parsing/formatting logic
-is in `src/components/Chat/chatUtils.js`. The backend tool set
-(`checkInventory`, `updateStock`, `checkOrders`, `checkStockLevels`,
-`generateReport`, `seedDemoInventory`, etc.) is documented in
-`../server/CLAUDE.md`.
+  Both use `@ai-sdk/react`'s `useChat` hook; shared parsing/formatting logic
+  is in `src/components/Chat/chatUtils.js`. The backend tool set
+  (`checkInventory`, `updateStock`, `checkOrders`, `checkStockLevels`,
+  `generateReport`, `seedDemoInventory`, etc.) is documented in
+  `../server/CLAUDE.md`.
 
 ## RTK Query pattern
 
@@ -84,12 +87,19 @@ export const xApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   tagTypes: ["x"],
   endpoints: (builder) => ({
-    getXList: builder.query({ query: (params) => `/endpoint?...`, providesTags: ["x"] }),
-    createX: builder.mutation({ query: (data) => ({ url: "/endpoint", method: "POST", body: data }), invalidatesTags: ["x"] }),
+    getXList: builder.query({
+      query: (params) => `/endpoint?...`,
+      providesTags: ["x"],
+    }),
+    createX: builder.mutation({
+      query: (data) => ({ url: "/endpoint", method: "POST", body: data }),
+      invalidatesTags: ["x"],
+    }),
   }),
 });
 export const { useGetXListQuery, useCreateXMutation } = xApi;
 ```
+
 List pages tend to use `useLazyGetXListQuery` + manual `page` state +
 `react-infinite-scroll-component` rather than a normal `useQuery`, so they
 can append pages into local state (see `Products/index.jsx`
@@ -108,7 +118,7 @@ than introducing a different pagination approach.
   hardcoded `initialProducts` demo data and client-side filtering
   (`filterProducts`) that's now superseded by server-side `name`/`status`
   query params via `useLazyGetProductsListQuery` — the `useState(() => {...},
-  [deps])` "effect" on line ~142 is actually a bug (should be `useEffect`,
+[deps])` "effect" on line ~142 is actually a bug (should be `useEffect`,
   `useState` ignores the second argument entirely), so client-side
   filtering silently never re-runs. Server-side filtering is what's
   actually wired up and working; treat the local filter state as legacy.

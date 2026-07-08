@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Activity,
   Archive,
@@ -69,6 +70,24 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
+  const [hoveredNav, setHoveredNav] = useState(null);
+
+  useEffect(() => {
+    setHoveredNav(null);
+  }, [isCollapsed]);
+
+  const handleNavMouseEnter = (item) => (e) => {
+    if (!isCollapsed) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    setHoveredNav({
+      title: item.title,
+      badge: item.badge,
+      top: rect.top + rect.height / 2,
+      left: rect.right + 12,
+    });
+  };
+
+  const handleNavMouseLeave = () => setHoveredNav(null);
 
   const toggleSection = (sectionTitle) => {
     setExpandedSections((prev) => ({
@@ -90,7 +109,7 @@ const Sidebar = () => {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden"
           onClick={toggleSidebar}
         />
       )}
@@ -100,7 +119,7 @@ const Sidebar = () => {
         role="button"
         tabIndex={0}
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md border"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md border border-gray-200 hover:bg-gray-50 transition-colors"
       >
         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
@@ -110,7 +129,7 @@ const Sidebar = () => {
         className={`
           fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50
           transform transition-all duration-300 ease-in-out
-          lg:translate-x-0 lg:static lg:z-auto
+          lg:translate-x-0 lg:static lg:z-auto lg:flex-shrink-0
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           ${isCollapsed ? "lg:w-20" : "lg:w-64"}
           flex flex-col
@@ -148,7 +167,7 @@ const Sidebar = () => {
         </div>
 
         {/* Navigation (scrollable) */}
-        <nav className="flex-1 overflow-y-auto p-4">
+        <nav className="flex-1 overflow-y-auto overflow-x-visible p-4">
           <div className="space-y-6">
             {navigationData.map((section) => (
               <div key={section.title}>
@@ -177,7 +196,8 @@ const Sidebar = () => {
                     <Link
                       key={item.title}
                       to={item.href}
-                      title={isCollapsed ? item.title : undefined}
+                      onMouseEnter={handleNavMouseEnter(item)}
+                      onMouseLeave={handleNavMouseLeave}
                       className={`
                         flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors
                         ${isCollapsed ? "lg:justify-center" : ""}
@@ -219,7 +239,8 @@ const Sidebar = () => {
         <div className="p-4 border-t border-gray-200 flex-shrink-0">
           <Link
             to="/settings"
-            title={isCollapsed ? "Settings" : undefined}
+            onMouseEnter={handleNavMouseEnter({ title: "Settings" })}
+            onMouseLeave={handleNavMouseLeave}
             className={`flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors ${
               isCollapsed ? "lg:justify-center" : "space-x-3"
             }`}
@@ -229,6 +250,26 @@ const Sidebar = () => {
           </Link>
         </div>
       </div>
+
+      {hoveredNav &&
+        createPortal(
+          <div
+            className="pointer-events-none fixed hidden lg:flex items-center whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-xs font-medium text-white shadow-lg z-[9999]"
+            style={{
+              top: hoveredNav.top,
+              left: hoveredNav.left,
+              transform: "translateY(-50%)",
+            }}
+          >
+            {hoveredNav.title}
+            {hoveredNav.badge && (
+              <span className="ml-1.5 rounded-full bg-red-500 px-1.5 text-[10px]">
+                {hoveredNav.badge}
+              </span>
+            )}
+          </div>,
+          document.body
+        )}
     </>
   );
 };

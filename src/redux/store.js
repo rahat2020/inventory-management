@@ -5,6 +5,9 @@ import storage from "redux-persist/lib/storage";
 import { invoicesApi } from "./api/invoicesApi";
 import { productsApi } from "./api/productsApi";
 import { categoriesApi } from "./api/categoriesApi";
+import { stockMovementsApi } from "./api/stockMovementsApi";
+import { globalApi } from "./api/globalApi";
+import { ordersApi } from "./api/ordersApi";
 
 const persistConfig = {
   key: "root",
@@ -19,6 +22,9 @@ const store = configureStore({
     [invoicesApi.reducerPath]: invoicesApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
+    [stockMovementsApi.reducerPath]: stockMovementsApi.reducer,
+    [globalApi.reducerPath]: globalApi.reducer,
+    [ordersApi.reducerPath]: ordersApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -28,7 +34,10 @@ const store = configureStore({
     }).concat(
       invoicesApi.middleware,
       productsApi.middleware,
-      categoriesApi.middleware
+      categoriesApi.middleware,
+      stockMovementsApi.middleware,
+      globalApi.middleware,
+      ordersApi.middleware
     ),
 });
 

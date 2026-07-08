@@ -617,7 +617,7 @@ export default function ProductsPage() {
                   </span>
                 </button>
                 {isCategoryDropdownOpen && (
-                  <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
+                  <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black/5 overflow-auto focus:outline-none">
                     {categories.map((category) => (
                       <button
                         key={category}
@@ -657,7 +657,7 @@ export default function ProductsPage() {
                   </span>
                 </button>
                 {isStatusDropdownOpen && (
-                  <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
+                  <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black/5 overflow-auto focus:outline-none">
                     {["All", "In Stock", "Low Stock", "Out of Stock"].map(
                       (status) => (
                         <button

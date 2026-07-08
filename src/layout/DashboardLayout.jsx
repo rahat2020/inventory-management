@@ -1,4 +1,6 @@
 import { Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "../components/sidebar/Sidebar";
 import AppFooter from "../components/AppFooter/AppFooter";
 import FloatingChat from "../components/Chat/FloatingChat";
@@ -10,18 +12,17 @@ const DashboardLayout = () => {
         {/* <HeadTitleUpdater /> */}
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <div className="md:w-1/6">
-            <Sidebar />
-          </div>
+          <Sidebar />
           {/* Main Scrollable Content */}
-          <main className="w-6/6 overflow-auto overflow-x-hidden relative">
+          <main className="flex-1 min-w-0 overflow-auto overflow-x-hidden relative">
             <Outlet />
           </main>
         </div>
-        
+
         {/* Floating Chatbot */}
         <FloatingChat />
       </div>
+      <ToastContainer />
     </>
   );
 };

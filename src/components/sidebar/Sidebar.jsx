@@ -6,6 +6,8 @@ import {
   Archive,
   Box,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   FileText,
   Home,
   Menu,
@@ -65,6 +67,7 @@ const Sidebar = () => {
 
   // states
   const [isOpen, setIsOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
 
   const toggleSection = (sectionTitle) => {
@@ -76,6 +79,10 @@ const Sidebar = () => {
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
   };
 
   return (
@@ -102,19 +109,36 @@ const Sidebar = () => {
       <div
         className={`
           fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50
-          transform transition-transform duration-300 ease-in-out
+          transform transition-all duration-300 ease-in-out
           lg:translate-x-0 lg:static lg:z-auto
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          ${isCollapsed ? "lg:w-20" : "lg:w-64"}
           flex flex-col
         `}
       >
+        {/* Collapse toggle (desktop only) */}
+        <button
+          onClick={toggleCollapse}
+          className="hidden lg:flex items-center justify-center absolute -right-3 top-8 w-6 h-6 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 z-10"
+        >
+          {isCollapsed ? (
+            <ChevronRight className="w-4 h-4" />
+          ) : (
+            <ChevronLeft className="w-4 h-4" />
+          )}
+        </button>
+
         {/* Header */}
         <div className="p-6 border-b border-gray-200 flex-shrink-0">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+          <div
+            className={`flex items-center ${
+              isCollapsed ? "lg:justify-center" : "space-x-3"
+            }`}
+          >
+            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <Box className="w-6 h-6 text-white" />
             </div>
-            <div>
+            <div className={isCollapsed ? "lg:hidden" : ""}>
               <h1 className="text-lg font-semibold text-gray-900">
                 InventoryPro
               </h1>
@@ -130,7 +154,9 @@ const Sidebar = () => {
               <div key={section.title}>
                 <button
                   onClick={() => toggleSection(section.title)}
-                  className="flex items-center justify-between w-full text-left px-2 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700 transition-colors"
+                  className={`flex items-center justify-between w-full text-left px-2 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700 transition-colors ${
+                    isCollapsed ? "lg:hidden" : ""
+                  }`}
                 >
                   {section.title}
                   <ChevronDown
@@ -142,15 +168,19 @@ const Sidebar = () => {
 
                 <div
                   className={`mt-2 space-y-1 transition-all duration-200 ${
-                    expandedSections[section.title] === false ? "hidden" : ""
+                    !isCollapsed && expandedSections[section.title] === false
+                      ? "hidden"
+                      : ""
                   }`}
                 >
                   {section.items.map((item) => (
                     <Link
                       key={item.title}
                       to={item.href}
+                      title={isCollapsed ? item.title : undefined}
                       className={`
                         flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors
+                        ${isCollapsed ? "lg:justify-center" : ""}
                         ${
                           location?.pathname === item?.href
                             ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
@@ -158,12 +188,22 @@ const Sidebar = () => {
                         }
                       `}
                     >
-                      <div className="flex items-center space-x-3">
-                        <item.icon className="w-5 h-5" />
-                        <span>{item.title}</span>
+                      <div
+                        className={`flex items-center ${
+                          isCollapsed ? "" : "space-x-3"
+                        }`}
+                      >
+                        <item.icon className="w-5 h-5 flex-shrink-0" />
+                        <span className={isCollapsed ? "lg:hidden" : ""}>
+                          {item.title}
+                        </span>
                       </div>
                       {item.badge && (
-                        <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">
+                        <span
+                          className={`bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full ${
+                            isCollapsed ? "lg:hidden" : ""
+                          }`}
+                        >
                           {item.badge}
                         </span>
                       )}
@@ -179,10 +219,13 @@ const Sidebar = () => {
         <div className="p-4 border-t border-gray-200 flex-shrink-0">
           <Link
             to="/settings"
-            className="flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            title={isCollapsed ? "Settings" : undefined}
+            className={`flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors ${
+              isCollapsed ? "lg:justify-center" : "space-x-3"
+            }`}
           >
-            <Settings className="w-5 h-5" />
-            <span>Settings</span>
+            <Settings className="w-5 h-5 flex-shrink-0" />
+            <span className={isCollapsed ? "lg:hidden" : ""}>Settings</span>
           </Link>
         </div>
       </div>

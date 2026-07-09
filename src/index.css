@@ -2,14 +2,14 @@
 @import "tailwindcss";
 
 :root {
-  --brand-color: #3173b1;
-  --brand-light-color: #28ade2c0;
+  --brand-color: #7c3aed;
+  --brand-light-color: #a78bfac0;
   --bg-light-color: #f4f1ea;
-  --brand-link-color: #3db1e2;
+  --brand-link-color: #8b5cf6;
   --border-light: #d8e0ed;
   --border: #b7b7b7;
   --bg-settings-module: #ff5900;
-  --brand-text-color: #0b6eb5;
+  --brand-text-color: #6d28d9;
   width: 100%;
   font-family: "Maven Pro", serif !important;
 }

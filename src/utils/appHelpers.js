@@ -12,7 +12,7 @@ export const formatShortTime = (date) => {
 
 export const getFocusColor = (showFocus, focused) => {
   if (!showFocus) return "";
-  return focused ? "ring-2 ring-blue-500" : "";
+  return focused ? "ring-2 ring-violet-500" : "";
 };
 
 export const formatRelativeTime = (date) => {

@@ -102,7 +102,7 @@ export default function CategoryPage() {
             </div>
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+              className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
             >
               <Plus className="h-4 w-4" />
               Add Category
@@ -120,7 +120,7 @@ export default function CategoryPage() {
                 placeholder="Search categories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-colors"
               />
             </div>
             <div className="flex gap-4 text-sm text-gray-600">
@@ -194,7 +194,7 @@ export default function CategoryPage() {
                     <button className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                       View Items
                     </button>
-                    <button className="flex-1 px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                    <button className="flex-1 px-3 py-2 text-sm font-medium text-white bg-violet-600 rounded-md hover:bg-violet-700 transition-colors">
                       Add Item
                     </button>
                   </div>
@@ -219,7 +219,7 @@ export default function CategoryPage() {
             {!searchTerm && (
               <button
                 onClick={() => setIsAddModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
               >
                 <Plus className="h-4 w-4" />
                 Add Your First Category
@@ -262,7 +262,7 @@ export default function CategoryPage() {
                       setNewCategory({ ...newCategory, name: e.target.value })
                     }
                     placeholder="Enter category name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-colors"
                   />
                 </div>
                 <div>
@@ -283,7 +283,7 @@ export default function CategoryPage() {
                     }
                     placeholder="Enter category description"
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-colors resize-none"
                   />
                 </div>
                 <div>
@@ -323,7 +323,7 @@ export default function CategoryPage() {
                 </button>
                 <button
                   onClick={handleAddCategory}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-white bg-violet-600 rounded-md hover:bg-violet-700 transition-colors"
                 >
                   Add Category
                 </button>

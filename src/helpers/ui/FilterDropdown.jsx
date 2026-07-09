@@ -484,7 +484,7 @@ export function FilterDropdown({
                         key={index}
                         role="button"
                         tabIndex={0}
-                        className={`flex items-center gap-1 bg-[#065cac] text-white text-xs font-semibold px-2 py-0.5 rounded h-6! ${item.disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"}`}
+                        className={`flex items-center gap-1 bg-[#7c3aed] text-white text-xs font-semibold px-2 py-0.5 rounded h-6! ${item.disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"}`}
                         onClick={() =>
                           !item.disabled && handleRemoveSelectedItem(item)
                         }
@@ -555,7 +555,7 @@ export function FilterDropdown({
             <div className="relative mb-2">
               <input
                 type="text"
-                className="w-full border border-gray-200 rounded-md py-1 px-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-200 rounded-md py-1 px-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
                 placeholder={`Search ${String(actualButtonLabel).toLowerCase()}...`}
                 value={searchTerm}
                 autoComplete="off"
@@ -580,7 +580,7 @@ export function FilterDropdown({
                 {resolvedSelectedValue?.map((item, index) => (
                   <div
                     key={index}
-                    className={`flex items-center gap-1 bg-[#065cac] text-white text-xs px-2 py-0.5 rounded h-6 ${item.disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"}`}
+                    className={`flex items-center gap-1 bg-[#7c3aed] text-white text-xs px-2 py-0.5 rounded h-6 ${item.disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"}`}
                     onClick={() =>
                       !item.disabled && handleRemoveSelectedItem(item)
                     }
@@ -602,7 +602,7 @@ export function FilterDropdown({
             {!actualIsMulti && size(resolvedSelectedValue) > 0 && (
               <div className="mb-2 flex flex-wrap gap-1 border-b border-gray-400 pb-2">
                 <div
-                  className={`flex items-center gap-1 bg-[#065cac] text-white text-xs px-2 py-0.5 rounded ${resolvedSelectedValue.disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"}`}
+                  className={`flex items-center gap-1 bg-[#7c3aed] text-white text-xs px-2 py-0.5 rounded ${resolvedSelectedValue.disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"}`}
                   onClick={() =>
                     !resolvedSelectedValue.disabled &&
                     handleRemoveSelectedItem(resolvedSelectedValue)
@@ -648,7 +648,7 @@ export function FilterDropdown({
                   };
                   return (
                     <div
-                      className={`p-1 font-semibold w-full flex items-center gap-1 cursor-pointer bg-gray-50 text-[.7rem] hover:bg-blue-50 rounded ${
+                      className={`p-1 font-semibold w-full flex items-center gap-1 cursor-pointer bg-gray-50 text-[.7rem] hover:bg-violet-50 rounded ${
                         allSelected ? "text-red-600" : "text-green-600"
                       }`}
                       onClick={toggleSelectAll}
@@ -675,8 +675,8 @@ export function FilterDropdown({
                         ? "cursor-not-allowed opacity-50"
                         : "cursor-pointer"
                     } ${
-                      isSelected(option) ? "bg-[#065bacb4] rounded-md" : ""
-                    } ${index === highlightedIndex ? "bg-blue-300" : ""} `}
+                      isSelected(option) ? "bg-[#7c3aedb4] rounded-md" : ""
+                    } ${index === highlightedIndex ? "bg-violet-300" : ""} `}
                     onMouseEnter={() => setHighlightedIndex(index)}
                     onClick={() =>
                       !isDisableDropdownMenu &&

@@ -109,8 +109,8 @@ export default function SettingsPage() {
       <button
         type="button"
         onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-          checked ? "bg-blue-600" : "bg-gray-200"
+        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 ${
+          checked ? "bg-violet-600" : "bg-gray-200"
         }`}
       >
         <span
@@ -142,7 +142,7 @@ export default function SettingsPage() {
                     onChange={(e) =>
                       updateSetting("companyName", e.target.value)
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                 </div>
                 <div>
@@ -155,7 +155,7 @@ export default function SettingsPage() {
                     onChange={(e) =>
                       updateSetting("companyPhone", e.target.value)
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -168,7 +168,7 @@ export default function SettingsPage() {
                       updateSetting("companyAddress", e.target.value)
                     }
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none resize-none"
                   />
                 </div>
                 <div>
@@ -181,7 +181,7 @@ export default function SettingsPage() {
                     onChange={(e) =>
                       updateSetting("companyEmail", e.target.value)
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                 </div>
               </div>
@@ -199,7 +199,7 @@ export default function SettingsPage() {
                   <select
                     value={settings.currency}
                     onChange={(e) => updateSetting("currency", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   >
                     <option value="USD">USD - US Dollar</option>
                     <option value="EUR">EUR - Euro</option>
@@ -214,7 +214,7 @@ export default function SettingsPage() {
                   <select
                     value={settings.timezone}
                     onChange={(e) => updateSetting("timezone", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   >
                     <option value="America/New_York">Eastern Time</option>
                     <option value="America/Chicago">Central Time</option>
@@ -231,7 +231,7 @@ export default function SettingsPage() {
                     onChange={(e) =>
                       updateSetting("dateFormat", e.target.value)
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   >
                     <option value="MM/DD/YYYY">MM/DD/YYYY</option>
                     <option value="DD/MM/YYYY">DD/MM/YYYY</option>
@@ -264,7 +264,7 @@ export default function SettingsPage() {
                         Number.parseInt(e.target.value)
                       )
                     }
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                   <p className="text-sm text-gray-500 mt-1">
                     Alert when stock falls below this number
@@ -292,7 +292,7 @@ export default function SettingsPage() {
                           Number.parseInt(e.target.value)
                         )
                       }
-                      className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                      className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                     />
                   </div>
                 )}
@@ -328,7 +328,7 @@ export default function SettingsPage() {
                     type="text"
                     value={settings.skuPrefix}
                     onChange={(e) => updateSetting("skuPrefix", e.target.value)}
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                 </div>
                 <div>
@@ -338,7 +338,7 @@ export default function SettingsPage() {
                   <select
                     value={settings.skuFormat}
                     onChange={(e) => updateSetting("skuFormat", e.target.value)}
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   >
                     <option value="auto">Auto Generate</option>
                     <option value="manual">Manual Entry</option>
@@ -441,7 +441,7 @@ export default function SettingsPage() {
                         Number.parseInt(e.target.value)
                       )
                     }
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                 </div>
 
@@ -458,7 +458,7 @@ export default function SettingsPage() {
                         Number.parseInt(e.target.value)
                       )
                     }
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                 </div>
               </div>
@@ -490,7 +490,7 @@ export default function SettingsPage() {
                       type={showApiKey ? "text" : "password"}
                       value={settings.apiKey}
                       onChange={(e) => updateSetting("apiKey", e.target.value)}
-                      className="w-full pr-10 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                      className="w-full pr-10 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                     />
                     <button
                       type="button"
@@ -516,7 +516,7 @@ export default function SettingsPage() {
                     onChange={(e) =>
                       updateSetting("webhookUrl", e.target.value)
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                     placeholder="https://api.example.com/webhook"
                   />
                 </div>
@@ -549,7 +549,7 @@ export default function SettingsPage() {
                     onChange={(e) =>
                       updateSetting("backupFrequency", e.target.value)
                     }
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   >
                     <option value="daily">Daily</option>
                     <option value="weekly">Weekly</option>
@@ -570,7 +570,7 @@ export default function SettingsPage() {
                         Number.parseInt(e.target.value)
                       )
                     }
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                 </div>
               </div>
@@ -581,7 +581,7 @@ export default function SettingsPage() {
                 Manual Backup
               </h3>
               <div className="flex gap-4">
-                <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <button className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                   <Download className="h-4 w-4" />
                   Create Backup
                 </button>
@@ -622,7 +622,7 @@ export default function SettingsPage() {
                         Number.parseInt(e.target.value)
                       )
                     }
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                 </div>
 
@@ -639,7 +639,7 @@ export default function SettingsPage() {
                         Number.parseInt(e.target.value)
                       )
                     }
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   />
                 </div>
               </div>
@@ -662,7 +662,7 @@ export default function SettingsPage() {
                   <select
                     value={settings.theme}
                     onChange={(e) => updateSetting("theme", e.target.value)}
-                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                   >
                     <option value="light">Light</option>
                     <option value="dark">Dark</option>
@@ -715,7 +715,7 @@ export default function SettingsPage() {
               </button>
               <button
                 onClick={handleSave}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
               >
                 <Save className="h-4 w-4" />
                 Save Changes
@@ -736,7 +736,7 @@ export default function SettingsPage() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-md transition-colors ${
                       activeTab === tab.id
-                        ? "bg-blue-50 text-blue-700 border-blue-200"
+                        ? "bg-violet-50 text-violet-700 border-violet-200"
                         : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >

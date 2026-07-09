@@ -374,7 +374,7 @@ export default function ProductsPage() {
       isShow: true,
       render: () => (
         <div className="flex justify-end items-start whitespace-nowrap">
-          <button className="text-blue-600 hover:text-blue-900 p-1">
+          <button className="text-violet-600 hover:text-violet-900 p-1">
             <svg
               className="h-4 w-4"
               fill="none"
@@ -426,7 +426,7 @@ export default function ProductsPage() {
 
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="inline-flex items-center px-4 py-2 bg-violet-600 text-white text-sm font-medium rounded-md hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
             >
               <svg
                 className="mr-2 h-4 w-4"
@@ -457,9 +457,9 @@ export default function ProductsPage() {
                     {products.length}
                   </p>
                 </div>
-                <div className="p-3 bg-blue-100 rounded-full">
+                <div className="p-3 bg-violet-100 rounded-full">
                   <svg
-                    className="h-6 w-6 text-blue-600"
+                    className="h-6 w-6 text-violet-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -586,7 +586,7 @@ export default function ProductsPage() {
                     placeholder="Search products or SKU..."
                     value={searchTerm}
                     onChange={handleSearchChange}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-violet-500 focus:border-violet-500"
                   />
                 </div>
               </div>
@@ -597,7 +597,7 @@ export default function ProductsPage() {
                   onClick={() =>
                     setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
                   }
-                  className="w-full sm:w-48 bg-white border border-gray-300 rounded-md px-3 py-2 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full sm:w-48 bg-white border border-gray-300 rounded-md px-3 py-2 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500"
                 >
                   <span className="block truncate">{selectedCategory}</span>
                   <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -635,7 +635,7 @@ export default function ProductsPage() {
               <div className="relative">
                 <button
                   onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-                  className="w-full sm:w-48 bg-white border border-gray-300 rounded-md px-3 py-2 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full sm:w-48 bg-white border border-gray-300 rounded-md px-3 py-2 text-left cursor-pointer focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500"
                 >
                   <span className="block truncate">
                     {selectedStatus === "All" ? "All Status" : selectedStatus}

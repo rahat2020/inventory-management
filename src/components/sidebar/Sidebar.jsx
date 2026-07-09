@@ -129,7 +129,7 @@ const Sidebar = () => {
         className={`
           fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50
           transform transition-all duration-300 ease-in-out
-          lg:translate-x-0 lg:static lg:z-auto lg:flex-shrink-0
+          lg:translate-x-0 lg:relative lg:z-auto lg:flex-shrink-0
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           ${isCollapsed ? "lg:w-20" : "lg:w-64"}
           flex flex-col
@@ -138,7 +138,7 @@ const Sidebar = () => {
         {/* Collapse toggle (desktop only) */}
         <button
           onClick={toggleCollapse}
-          className="hidden lg:flex items-center justify-center absolute -right-3 top-8 w-6 h-6 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 z-10"
+          className="hidden lg:flex items-center justify-center absolute -right-3 top-8 w-6 h-6 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 z-20"
         >
           {isCollapsed ? (
             <ChevronRight className="w-4 h-4" />
@@ -154,7 +154,7 @@ const Sidebar = () => {
               isCollapsed ? "lg:justify-center" : "space-x-3"
             }`}
           >
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
               <Box className="w-6 h-6 text-white" />
             </div>
             <div className={isCollapsed ? "lg:hidden" : ""}>
@@ -203,7 +203,7 @@ const Sidebar = () => {
                         ${isCollapsed ? "lg:justify-center" : ""}
                         ${
                           location?.pathname === item?.href
-                            ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
+                            ? "bg-violet-50 text-violet-700 border-r-2 border-violet-600"
                             : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                         }
                       `}

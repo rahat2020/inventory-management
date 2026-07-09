@@ -70,7 +70,7 @@ export default function AppInput({
           title={title}
           className={`${inputClsName} ${
             disabled ? "bg-gray-200 cursor-not-allowed" : "bg-white"
-          } peer border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200`}
+          } peer border border-gray-300 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-colors duration-200`}
         />
       ) : (
         <textarea
@@ -93,7 +93,7 @@ export default function AppInput({
           title={title}
           className={`${inputClsName} ${
             disabled ? "bg-gray-200 cursor-not-allowed" : "bg-white"
-          } peer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200`}
+          } peer focus:outline-none focus:ring-2 focus:ring-violet-500 transition-colors duration-200`}
         />
       )}
 

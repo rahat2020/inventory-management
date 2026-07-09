@@ -248,7 +248,7 @@ export default function AllOrdersPage() {
                 <Calendar className="h-4 w-4" />
                 Export
               </button>
-              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+              <button className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
                 <Package className="h-4 w-4" />
                 New Order
               </button>
@@ -268,7 +268,7 @@ export default function AllOrdersPage() {
                   {orderStats.total}
                 </p>
               </div>
-              <Package className="h-6 w-6 text-blue-600" />
+              <Package className="h-6 w-6 text-violet-600" />
             </div>
           </div>
           <div className="bg-white p-4 rounded-lg border border-gray-200">
@@ -361,7 +361,7 @@ export default function AllOrdersPage() {
                 placeholder="Search orders, customers, or email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-colors"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -370,7 +370,7 @@ export default function AllOrdersPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-colors"
                 >
                   <option value="all">All Status</option>
                   <option value="pending">Pending</option>
@@ -383,7 +383,7 @@ export default function AllOrdersPage() {
               <select
                 value={paymentFilter}
                 onChange={(e) => setPaymentFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-colors"
               >
                 <option value="all">All Payments</option>
                 <option value="paid">Paid</option>
@@ -394,7 +394,7 @@ export default function AllOrdersPage() {
               <select
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-colors"
               >
                 <option value="all">All Time</option>
                 <option value="today">Today</option>
@@ -489,7 +489,7 @@ export default function AllOrdersPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => openOrderDetails(order)}
-                          className="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded transition-colors"
+                          className="text-violet-600 hover:text-violet-900 p-1 hover:bg-violet-50 rounded transition-colors"
                           title="View Details"
                         >
                           <Eye className="h-4 w-4" />
@@ -499,7 +499,7 @@ export default function AllOrdersPage() {
                           onChange={(e) =>
                             updateOrderStatus(order.id, e.target.value)
                           }
-                          className="text-xs border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                          className="text-xs border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                         >
                           <option value="pending">Pending</option>
                           <option value="processing">Processing</option>
@@ -682,7 +682,7 @@ export default function AllOrdersPage() {
                 >
                   Close
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                <button className="px-4 py-2 text-sm font-medium text-white bg-violet-600 rounded-md hover:bg-violet-700 transition-colors">
                   Print Invoice
                 </button>
               </div>

@@ -39,7 +39,7 @@ const STATUS_FILTER_OPTIONS = [
 ];
 
 const DROPDOWN_TRIGGER_CLASSES =
-  "bg-white border border-gray-300 text-gray-900 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+  "bg-white border border-gray-300 text-gray-900 px-3 py-2 focus:ring-2 focus:ring-violet-500 focus:border-violet-500";
 
 const emptyForm = {
   name: "",
@@ -324,7 +324,7 @@ export default function StockLevelsPage() {
             </div>
             <button
               onClick={openAddModal}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors duration-200"
+              className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors duration-200"
             >
               <Plus className="h-4 w-4" />
               Add Product
@@ -344,8 +344,8 @@ export default function StockLevelsPage() {
                   {isLoadingSummary ? "…" : stats.totalProducts}
                 </p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-full">
-                <Package className="h-6 w-6 text-blue-600" />
+              <div className="p-3 bg-violet-100 rounded-full">
+                <Package className="h-6 w-6 text-violet-600" />
               </div>
             </div>
           </div>
@@ -402,7 +402,7 @@ export default function StockLevelsPage() {
                 placeholder="Search products, SKU, or category..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-colors"
               />
             </div>
             <div className="flex items-center gap-2 w-full sm:w-48">
@@ -510,7 +510,7 @@ export default function StockLevelsPage() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => openRestockModal(product)}
-                            className="text-blue-600 hover:text-blue-900 p-1 hover:bg-blue-50 rounded transition-colors"
+                            className="text-violet-600 hover:text-violet-900 p-1 hover:bg-violet-50 rounded transition-colors"
                             title="Restock"
                           >
                             <RefreshCw className="h-4 w-4" />
@@ -543,7 +543,7 @@ export default function StockLevelsPage() {
             <div className="flex justify-center py-4 border-t border-gray-100">
               <button
                 onClick={fetchMoreProducts}
-                className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
               >
                 Load more
               </button>
@@ -565,7 +565,7 @@ export default function StockLevelsPage() {
               {!searchInput && filterStatus === "all" && (
                 <button
                   onClick={openAddModal}
-                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                  className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
                 >
                   <Plus className="h-4 w-4" />
                   Add Your First Product
@@ -602,7 +602,7 @@ export default function StockLevelsPage() {
                       onChange={(e) =>
                         handleFormChange("name", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                       placeholder="Enter product name"
                     />
                   </div>
@@ -617,7 +617,7 @@ export default function StockLevelsPage() {
                         onChange={(e) =>
                           handleFormChange("sku", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                         placeholder="Enter SKU"
                       />
                     </div>
@@ -632,7 +632,7 @@ export default function StockLevelsPage() {
                         onChange={(e) =>
                           handleFormChange("category", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                         placeholder="Enter category"
                       />
                       <datalist id="category-options">
@@ -654,7 +654,7 @@ export default function StockLevelsPage() {
                         onChange={(e) =>
                           handleFormChange("quantity", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                         placeholder="0"
                       />
                     </div>
@@ -688,7 +688,7 @@ export default function StockLevelsPage() {
                         onChange={(e) =>
                           handleFormChange("price", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                         placeholder="0.00"
                       />
                     </div>
@@ -704,7 +704,7 @@ export default function StockLevelsPage() {
                         onChange={(e) =>
                           handleFormChange("cost", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                         placeholder="0.00"
                       />
                     </div>
@@ -720,7 +720,7 @@ export default function StockLevelsPage() {
                         onChange={(e) =>
                           handleFormChange("warehouse", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                         placeholder="Optional"
                       />
                     </div>
@@ -734,7 +734,7 @@ export default function StockLevelsPage() {
                         onChange={(e) =>
                           handleFormChange("supplierName", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                         placeholder="Optional"
                       />
                     </div>
@@ -751,7 +751,7 @@ export default function StockLevelsPage() {
                   <button
                     type="submit"
                     disabled={isCreating || isUpdating}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="px-4 py-2 text-sm font-medium text-white bg-violet-600 rounded-md hover:bg-violet-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {isCreating || isUpdating
                       ? "Saving..."
@@ -804,7 +804,7 @@ export default function StockLevelsPage() {
                       type="number"
                       value={restockQuantity}
                       onChange={(e) => setRestockQuantity(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                       placeholder="Enter quantity to add"
                       min="1"
                     />
@@ -817,7 +817,7 @@ export default function StockLevelsPage() {
                       type="text"
                       value={restockReference}
                       onChange={(e) => setRestockReference(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                       placeholder="e.g. PO-1042 (optional)"
                     />
                   </div>
@@ -841,7 +841,7 @@ export default function StockLevelsPage() {
                   <button
                     type="submit"
                     disabled={isRestocking}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="px-4 py-2 text-sm font-medium text-white bg-violet-600 rounded-md hover:bg-violet-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {isRestocking ? "Restocking..." : "Restock"}
                   </button>

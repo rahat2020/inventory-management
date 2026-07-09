@@ -68,10 +68,10 @@ const AppDropdown = ({
             role="button"
             tabIndex={0}
             onClick={() => !disabled && setIsSelectorMenuOpen((prev) => !prev)}
-            className={`border border-gray-300 bg-white ${customClassForSelector} rounded cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`border border-gray-300 bg-white ${customClassForSelector} rounded cursor-pointer flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-violet-500 ${
               disabled
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "hover:border-blue-500"
+                : "hover:border-violet-500"
             }`}
           >
             <span className={`text-gray-500 text-xs font-medium uppercase`}>
@@ -111,7 +111,7 @@ const AppDropdown = ({
             <div className="relative py-2 px-1">
               <input
                 type="text"
-                className="w-full border border-gray-200 rounded py-1 px-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-xs"
+                className="w-full border border-gray-200 rounded py-1 px-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-xs"
                 placeholder={`Search ${placeholder.toLowerCase()}...`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -128,8 +128,8 @@ const AppDropdown = ({
                   handleDropdown(opt?.value);
                   setIsSelectorMenuOpen(false);
                 }}
-                className={`px-4 py-1 text-xs font-medium text-gray-700 capitalize hover:bg-blue-100 cursor-pointer ${
-                  value === opt?.value ? "bg-blue-100 font-semibold" : ""
+                className={`px-4 py-1 text-xs font-medium text-gray-700 capitalize hover:bg-violet-100 cursor-pointer ${
+                  value === opt?.value ? "bg-violet-100 font-semibold" : ""
                 }`}
               >
                 {opt.label}

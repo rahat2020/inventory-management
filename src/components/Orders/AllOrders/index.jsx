@@ -234,26 +234,16 @@ export default function AllOrdersPage() {
   return (
     <div className="min-h-screen bg-gray-50 px-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">All Orders</h1>
-              <p className="text-gray-600 mt-1">
-                Manage and track customer orders
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <button className="inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200">
-                <Calendar className="h-4 w-4" />
-                Export
-              </button>
-              <button className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                <Package className="h-4 w-4" />
-                New Order
-              </button>
-            </div>
-          </div>
+        {/* Header actions */}
+        <div className="mb-8 flex justify-end gap-2">
+          <button className="inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200">
+            <Calendar className="h-4 w-4" />
+            Export
+          </button>
+          <button className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+            <Package className="h-4 w-4" />
+            New Order
+          </button>
         </div>
 
         {/* Order Statistics */}

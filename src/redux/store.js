@@ -8,6 +8,7 @@ import { categoriesApi } from "./api/categoriesApi";
 import { stockMovementsApi } from "./api/stockMovementsApi";
 import { globalApi } from "./api/globalApi";
 import { ordersApi } from "./api/ordersApi";
+import { analyticsApi } from "./api/analyticsApi";
 
 const persistConfig = {
   key: "root",
@@ -25,6 +26,7 @@ const store = configureStore({
     [stockMovementsApi.reducerPath]: stockMovementsApi.reducer,
     [globalApi.reducerPath]: globalApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
+    [analyticsApi.reducerPath]: analyticsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -37,7 +39,8 @@ const store = configureStore({
       categoriesApi.middleware,
       stockMovementsApi.middleware,
       globalApi.middleware,
-      ordersApi.middleware
+      ordersApi.middleware,
+      analyticsApi.middleware
     ),
 });
 

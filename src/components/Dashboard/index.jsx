@@ -15,7 +15,6 @@ import {
   DollarSign,
   AlertTriangle,
   TrendingUp,
-  TrendingDown,
   CheckCircle,
   Circle,
   XCircle,
@@ -34,6 +33,7 @@ import {
   CloudSnow,
   CloudLightning,
   CloudDrizzle,
+  Cpu,
 } from "react-feather";
 import {
   useGetStockLevelsSummaryQuery,
@@ -44,12 +44,14 @@ import {
   useGetOrdersListQuery,
   useGetSalesTrendQuery,
 } from "../../redux/api/ordersApi";
+import { useGetRestockForecastQuery } from "../../redux/api/analyticsApi";
 import {
   formatCompactNumber,
   formatCurrency,
   formatRelativeTime,
 } from "../../utils/appHelpers";
 import AppSpinner from "../../helpers/ui/AppSpinner";
+import StatCard, { DeltaPill, TrendChip } from "../../helpers/ui/StatCard";
 
 const ORDER_STEPS = [
   { key: "pending", label: "Order Placed", desc: "Order received, awaiting confirmation" },
@@ -132,7 +134,8 @@ function useDhakaWeather() {
         const params = new URLSearchParams({
           latitude: DHAKA_COORDS.latitude,
           longitude: DHAKA_COORDS.longitude,
-          current: "temperature_2m,weather_code",
+          current:
+            "temperature_2m,apparent_temperature,weather_code,wind_speed_10m",
           timezone: "Asia/Dhaka",
         });
         const res = await fetch(
@@ -142,6 +145,8 @@ function useDhakaWeather() {
         if (!cancelled) {
           setWeather({
             temperature: data?.current?.temperature_2m,
+            feelsLike: data?.current?.apparent_temperature,
+            windSpeed: data?.current?.wind_speed_10m,
             weatherCode: data?.current?.weather_code,
           });
         }
@@ -188,34 +193,43 @@ function WeatherClockBar() {
   });
 
   const items = [
-    { icon: Clock, text: timeLabel },
-    { icon: Calendar, text: banglaDateLabel, lang: "bn" },
-    { icon: Calendar, text: englishDateLabel },
+    { icon: Clock, label: "Local time", text: timeLabel },
+    { icon: Calendar, label: "Bangla date", text: banglaDateLabel, lang: "bn" },
+    { icon: Calendar, label: "Today", text: englishDateLabel },
   ];
 
   return (
-    <div className="grid grid-cols-12 gap-3">
-      {/* Clock + dates — 9/12 */}
-      <div className="col-span-12 lg:col-span-9 flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
-        {items.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 text-sm text-gray-700"
-          >
-            <item.icon className="w-4 h-4 text-violet-600 shrink-0" />
-            <span lang={item.lang} className="font-medium whitespace-nowrap">
-              {item.text}
-            </span>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* Clock + dates — each its own card */}
+      {items.map((item, index) => (
+        <div
+          key={index}
+          className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm hover:shadow-md hover:border-violet-200 transition-all"
+        >
+          <div className="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center shrink-0">
+            <item.icon className="w-4 h-4 text-violet-600" />
           </div>
-        ))}
-      </div>
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+              {item.label}
+            </p>
+            <p
+              lang={item.lang}
+              className="text-sm font-semibold text-gray-800 whitespace-nowrap"
+            >
+              {item.text}
+            </p>
+          </div>
+        </div>
+      ))}
 
-      {/* Weather — 3/12 */}
-      <div className="col-span-12 lg:col-span-3 flex items-center justify-between gap-3 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 p-4 shadow-sm text-white">
-        <div className={`shrink-0 ${weatherMeta?.animation || ""}`}>
+      {/* Weather */}
+      <div className="col-span-2 lg:col-span-1 relative overflow-hidden flex items-center justify-between gap-3 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 p-4 shadow-sm text-white">
+        <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10 pointer-events-none" />
+        <div className={`relative shrink-0 ${weatherMeta?.animation || ""}`}>
           <WeatherIcon className="w-9 h-9" />
         </div>
-        <div className="text-right min-w-0">
+        <div className="relative text-right min-w-0">
           <p className="text-2xl font-bold leading-none whitespace-nowrap">
             {weather?.temperature !== undefined
               ? `${Math.round(weather.temperature)}°C`
@@ -224,54 +238,16 @@ function WeatherClockBar() {
           <p className="text-xs text-violet-100 mt-1.5 truncate">
             {weather ? weatherMeta?.label || "—" : "Loading…"} &middot; Dhaka
           </p>
+          {weather?.feelsLike !== undefined && (
+            <p className="text-[11px] text-violet-100/80 mt-0.5 truncate">
+              Feels {Math.round(weather.feelsLike)}°
+              {weather?.windSpeed !== undefined &&
+                ` · Wind ${Math.round(weather.windSpeed)} km/h`}
+            </p>
+          )}
         </div>
       </div>
     </div>
-  );
-}
-
-function StatCard({ title, value, icon: Icon, color, footer }) {
-  const gradientClasses = {
-    violet: "from-violet-500 to-purple-600",
-    green: "from-emerald-500 to-green-600",
-    amber: "from-amber-400 to-orange-500",
-    pink: "from-pink-500 to-rose-600",
-  };
-
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg transition-all duration-200">
-      <div
-        className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-gradient-to-br ${gradientClasses[color]} shadow-md`}
-      >
-        <Icon className="w-7 h-7 text-white" />
-      </div>
-      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-4">
-        {title}
-      </p>
-      <p className="text-3xl font-extrabold text-gray-900 mt-1 truncate">
-        {value}
-      </p>
-      {footer && <div className="mt-3 text-xs">{footer}</div>}
-    </div>
-  );
-}
-
-function TrendChip({ percent, positiveIsGood = true }) {
-  if (percent === null || percent === undefined) {
-    return <span className="text-gray-400">No data for last week</span>;
-  }
-  const isPositive = percent >= 0;
-  const isGood = positiveIsGood ? isPositive : !isPositive;
-  const Icon = isPositive ? TrendingUp : TrendingDown;
-  return (
-    <span
-      className={`inline-flex items-center gap-1 font-medium ${
-        isGood ? "text-green-600" : "text-red-600"
-      }`}
-    >
-      <Icon className="w-3 h-3" />
-      {Math.abs(percent).toFixed(1)}% vs last week
-    </span>
   );
 }
 
@@ -301,8 +277,11 @@ export default function DashboardPage() {
     useGetStockMovementsQuery({ limit: 5 });
   const { data: latestOrders, isLoading: isLoadingLatestOrder } =
     useGetOrdersListQuery({ limit: 1 });
+  const { data: forecast, isLoading: isLoadingForecast } =
+    useGetRestockForecastQuery();
 
   const summary = stockSummary?.summary || {};
+  const forecastItems = forecast?.items || [];
   const stats = orderStats || {};
   const latestOrder = latestOrders?.orders?.[0];
 
@@ -315,13 +294,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen p-6 space-y-6 bg-gradient-to-br from-violet-50 via-white to-white">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">
-          Overview of your inventory and order performance
-        </p>
-      </div>
-
       <WeatherClockBar />
 
       {/* Stats Grid */}
@@ -332,11 +304,13 @@ export default function DashboardPage() {
           icon={Package}
           color="violet"
           footer={
-            <span className="text-gray-500">
-              {summary.productsAddedThisWeek > 0
-                ? `+${summary.productsAddedThisWeek} added this week`
-                : "No new products this week"}
-            </span>
+            isLoadingStock ? null : summary.productsAddedThisWeek > 0 ? (
+              <DeltaPill tone="good" icon={TrendingUp}>
+                +{summary.productsAddedThisWeek} added this week
+              </DeltaPill>
+            ) : (
+              <DeltaPill>No new products this week</DeltaPill>
+            )
           }
         />
         <StatCard
@@ -345,11 +319,13 @@ export default function DashboardPage() {
           icon={DollarSign}
           color="green"
           footer={
-            <span className="text-gray-500">
-              {summary.unitsRestockedThisWeek > 0
-                ? `+${summary.unitsRestockedThisWeek} units restocked this week`
-                : "No restocks this week"}
-            </span>
+            isLoadingStock ? null : summary.unitsRestockedThisWeek > 0 ? (
+              <DeltaPill tone="good" icon={TrendingUp}>
+                +{summary.unitsRestockedThisWeek} units restocked
+              </DeltaPill>
+            ) : (
+              <DeltaPill>No restocks this week</DeltaPill>
+            )
           }
         />
         <StatCard
@@ -357,7 +333,26 @@ export default function DashboardPage() {
           value={isLoadingStock ? "…" : summary.lowStock ?? 0}
           icon={AlertTriangle}
           color="amber"
-          footer={<span className="text-amber-700">Attention needed</span>}
+          footer={
+            isLoadingStock ? null : !summary.lowStock && !summary.outOfStock ? (
+              <DeltaPill tone="good" icon={CheckCircle}>
+                All stock healthy
+              </DeltaPill>
+            ) : (
+              <>
+                {summary.lowStock > 0 && (
+                  <DeltaPill tone="warning" icon={AlertTriangle}>
+                    Attention needed
+                  </DeltaPill>
+                )}
+                {summary.outOfStock > 0 && (
+                  <DeltaPill tone="bad" icon={XCircle}>
+                    {summary.outOfStock} out of stock
+                  </DeltaPill>
+                )}
+              </>
+            )
+          }
         />
         <StatCard
           title="Total Revenue"
@@ -549,6 +544,110 @@ export default function DashboardPage() {
             </>
           )}
         </div>
+      </div>
+
+      {/* AI Restock Forecast */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center shrink-0 shadow-sm">
+              <Cpu className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                AI Restock Forecast
+              </h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Projected from the last {forecast?.lookbackDays ?? 30} days of
+                sales velocity vs. current stock
+              </p>
+            </div>
+          </div>
+          {!isLoadingForecast && forecastItems.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {forecast.summary.urgentCount > 0 && (
+                <DeltaPill tone="bad" icon={AlertTriangle}>
+                  {forecast.summary.urgentCount} urgent
+                </DeltaPill>
+              )}
+              <DeltaPill>
+                {forecast.summary.productsToReorder} product
+                {forecast.summary.productsToReorder === 1 ? "" : "s"} to
+                reorder
+              </DeltaPill>
+              <DeltaPill>
+                {formatCurrency(forecast.summary.totalEstimatedCost)} est.
+                cost
+              </DeltaPill>
+            </div>
+          )}
+        </div>
+
+        {isLoadingForecast ? (
+          <div className="py-8 flex justify-center">
+            <AppSpinner />
+          </div>
+        ) : forecastItems.length === 0 ? (
+          <div className="py-10 text-center text-sm text-gray-500">
+            Stock levels look healthy — nothing needs reordering right now.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs text-gray-400 uppercase tracking-wide">
+                  <th className="px-2 pb-2 font-semibold">Product</th>
+                  <th className="px-2 pb-2 font-semibold">In Stock</th>
+                  <th className="px-2 pb-2 font-semibold">Avg Sold/Day</th>
+                  <th className="px-2 pb-2 font-semibold">Stockout In</th>
+                  <th className="px-2 pb-2 font-semibold">Reorder Qty</th>
+                  <th className="px-2 pb-2 font-semibold text-right">
+                    Est. Cost
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {forecastItems.map((item) => (
+                  <tr key={item.productId}>
+                    <td className="px-2 py-3">
+                      <p className="font-medium text-gray-900">{item.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {item.sku} &middot; {item.category}
+                      </p>
+                    </td>
+                    <td className="px-2 py-3 text-gray-700">
+                      {item.currentQuantity}
+                    </td>
+                    <td className="px-2 py-3 text-gray-700">
+                      {item.avgDailyUnitsSold || "—"}
+                    </td>
+                    <td className="px-2 py-3">
+                      {item.urgent ? (
+                        <DeltaPill tone="bad" icon={AlertTriangle}>
+                          {item.daysUntilStockout !== null
+                            ? `${item.daysUntilStockout}d`
+                            : "Out now"}
+                        </DeltaPill>
+                      ) : item.daysUntilStockout !== null ? (
+                        <span className="text-gray-700">
+                          {item.daysUntilStockout}d
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">No recent sales</span>
+                      )}
+                    </td>
+                    <td className="px-2 py-3 font-semibold text-violet-700">
+                      +{item.recommendedReorderQty}
+                    </td>
+                    <td className="px-2 py-3 text-right text-gray-700">
+                      {formatCurrency(item.estimatedCost)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Secondary Grid */}

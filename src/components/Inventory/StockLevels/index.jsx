@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useEffect, useState } from "react";
 import {
   Search,
@@ -240,7 +238,7 @@ export default function StockLevelsPage() {
       toastAlert(
         "error",
         getErrorMessage(err, "Something went wrong. Please try again."),
-        "top-right"
+        "top-right",
       );
     }
   };
@@ -271,7 +269,7 @@ export default function StockLevelsPage() {
       toastAlert(
         "success",
         `${selectedProduct.name} restocked successfully.`,
-        "top-right"
+        "top-right",
       );
       setIsRestockModalOpen(false);
       setSelectedProduct(null);
@@ -282,7 +280,7 @@ export default function StockLevelsPage() {
       toastAlert(
         "error",
         getErrorMessage(err, "Failed to restock product."),
-        "top-right"
+        "top-right",
       );
     }
   };
@@ -305,7 +303,7 @@ export default function StockLevelsPage() {
       toastAlert(
         "error",
         getErrorMessage(err, "Failed to delete product."),
-        "top-right"
+        "top-right",
       );
     }
   };
@@ -313,23 +311,15 @@ export default function StockLevelsPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Stock Levels</h1>
-              <p className="text-gray-600 mt-1">
-                Monitor and manage product inventory
-              </p>
-            </div>
-            <button
-              onClick={openAddModal}
-              className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors duration-200"
-            >
-              <Plus className="h-4 w-4" />
-              Add Product
-            </button>
-          </div>
+        {/* Header actions */}
+        <div className="mb-8 flex justify-end">
+          <button
+            onClick={openAddModal}
+            className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors duration-200"
+          >
+            <Plus className="h-4 w-4" />
+            Add Product
+          </button>
         </div>
 
         {/* Stock Statistics */}
@@ -491,7 +481,7 @@ export default function StockLevelsPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center gap-1 ${getStatusBadgeClasses(
-                            product.status
+                            product.status,
                           )}`}
                         >
                           {getStatusIcon(product.status)}
@@ -599,9 +589,7 @@ export default function StockLevelsPage() {
                     <input
                       type="text"
                       value={productForm.name}
-                      onChange={(e) =>
-                        handleFormChange("name", e.target.value)
-                      }
+                      onChange={(e) => handleFormChange("name", e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none"
                       placeholder="Enter product name"
                     />
@@ -756,8 +744,8 @@ export default function StockLevelsPage() {
                     {isCreating || isUpdating
                       ? "Saving..."
                       : editingProduct
-                      ? "Save Changes"
-                      : "Add Product"}
+                        ? "Save Changes"
+                        : "Add Product"}
                   </button>
                 </div>
               </form>

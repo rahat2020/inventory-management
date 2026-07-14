@@ -5,10 +5,8 @@ import { createPortal } from "react-dom";
 import {
   Activity,
   Archive,
-  Box,
   ChevronDown,
   ChevronLeft,
-  ChevronRight,
   FileText,
   Home,
   Menu,
@@ -24,6 +22,7 @@ import {
   X,
 } from "react-feather";
 import { Link, useLocation } from "react-router-dom";
+import Logo from "../Logo";
 
 const navigationData = [
   {
@@ -135,33 +134,41 @@ const Sidebar = () => {
           flex flex-col
         `}
       >
-        {/* Collapse toggle (desktop only) */}
+        {/* Collapse toggle (desktop only) — vertically centered on the sidebar's
+            own edge, well clear of the topbar's title band and the scrollable
+            content, so it never sits underneath either */}
         <button
           onClick={toggleCollapse}
-          className="hidden lg:flex items-center justify-center absolute -right-3 top-8 w-6 h-6 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 z-20"
+          className="hidden lg:flex items-center justify-center absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white border border-gray-200 rounded-full shadow-md hover:bg-gray-50 hover:shadow-lg hover:scale-110 active:scale-95 transition-all duration-200 z-40"
         >
-          {isCollapsed ? (
-            <ChevronRight className="w-4 h-4" />
-          ) : (
-            <ChevronLeft className="w-4 h-4" />
-          )}
+          <ChevronLeft
+            className={`w-4 h-4 transition-transform duration-300 ease-in-out ${
+              isCollapsed ? "rotate-180" : ""
+            }`}
+          />
         </button>
 
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 flex-shrink-0">
+        <div className="p-2 px-6 py-4.5 border-b border-gray-200 flex-shrink-0">
           <div
             className={`flex items-center ${
               isCollapsed ? "lg:justify-center" : "space-x-3"
             }`}
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Box className="w-6 h-6 text-white" />
-            </div>
-            <div className={isCollapsed ? "lg:hidden" : ""}>
-              <h1 className="text-lg font-semibold text-gray-900">
-                InventoryPro
+            <Logo size={40} className="shadow-sm" />
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                isCollapsed
+                  ? "lg:max-w-0 lg:opacity-0"
+                  : "lg:max-w-[180px] lg:opacity-100"
+              }`}
+            >
+              <h1 className="text-lg font-semibold text-gray-900 whitespace-nowrap">
+                StockMaster
               </h1>
-              <p className="text-sm text-gray-500">Management System</p>
+              <p className="text-sm text-gray-500 whitespace-nowrap">
+                Management System
+              </p>
             </div>
           </div>
         </div>
@@ -171,19 +178,25 @@ const Sidebar = () => {
           <div className="space-y-6">
             {navigationData.map((section) => (
               <div key={section.title}>
-                <button
-                  onClick={() => toggleSection(section.title)}
-                  className={`flex items-center justify-between w-full text-left px-2 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700 transition-colors ${
-                    isCollapsed ? "lg:hidden" : ""
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    isCollapsed
+                      ? "lg:max-h-0 lg:opacity-0"
+                      : "lg:max-h-8 lg:opacity-100"
                   }`}
                 >
-                  {section.title}
-                  <ChevronDown
-                    className={`w-4 h-4 transition-transform ${
-                      expandedSections[section.title] ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+                  <button
+                    onClick={() => toggleSection(section.title)}
+                    className="flex items-center justify-between w-full text-left px-2 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700 transition-colors"
+                  >
+                    {section.title}
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${
+                        expandedSections[section.title] ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                </div>
 
                 <div
                   className={`mt-2 space-y-1 transition-all duration-200 ${
@@ -214,14 +227,22 @@ const Sidebar = () => {
                         }`}
                       >
                         <item.icon className="w-5 h-5 flex-shrink-0" />
-                        <span className={isCollapsed ? "lg:hidden" : ""}>
+                        <span
+                          className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
+                            isCollapsed
+                              ? "lg:max-w-0 lg:opacity-0"
+                              : "lg:max-w-[160px] lg:opacity-100"
+                          }`}
+                        >
                           {item.title}
                         </span>
                       </div>
                       {item.badge && (
                         <span
-                          className={`bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full ${
-                            isCollapsed ? "lg:hidden" : ""
+                          className={`bg-red-100 text-red-800 text-xs font-medium rounded-full px-2 py-1 whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${
+                            isCollapsed
+                              ? "lg:max-w-0 lg:opacity-0 lg:px-0 lg:py-0"
+                              : "lg:max-w-[40px] lg:opacity-100"
                           }`}
                         >
                           {item.badge}
@@ -246,7 +267,15 @@ const Sidebar = () => {
             }`}
           >
             <Settings className="w-5 h-5 flex-shrink-0" />
-            <span className={isCollapsed ? "lg:hidden" : ""}>Settings</span>
+            <span
+              className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
+                isCollapsed
+                  ? "lg:max-w-0 lg:opacity-0"
+                  : "lg:max-w-[120px] lg:opacity-100"
+              }`}
+            >
+              Settings
+            </span>
           </Link>
         </div>
       </div>
@@ -268,7 +297,7 @@ const Sidebar = () => {
               </span>
             )}
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

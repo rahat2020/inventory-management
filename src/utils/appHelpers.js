@@ -37,6 +37,33 @@ export const formatCurrency = (value) =>
     maximumFractionDigits: 0,
   }).format(Number(value) || 0);
 
+// converts an array of flat objects into a CSV file and triggers a browser
+// download — client-side only, no backend endpoint needed
+export const exportToCsv = (filename, rows) => {
+  if (!size(rows)) return;
+
+  const headers = Object.keys(rows[0]);
+  const escapeCell = (value) => {
+    const str = value === null || value === undefined ? "" : String(value);
+    return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+  };
+
+  const csv = [
+    headers.join(","),
+    ...rows.map((row) => headers.map((key) => escapeCell(row[key])).join(",")),
+  ].join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename.endsWith(".csv") ? filename : `${filename}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
 export const formatCompactNumber = (value) =>
   new Intl.NumberFormat("en-US", { notation: "compact" }).format(
     Number(value) || 0,

@@ -1,12 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_URL } from "../../config/api";
 
+const buildMovementListQuery = (path) => ({ search = "", page = 1, limit = 10 } = {}) => {
+  const params = new URLSearchParams();
+  if (search) params.append("search", search);
+  params.append("page", page);
+  params.append("limit", limit);
+  return `${path}?${params.toString()}`;
+};
+
 export const stockMovementsApi = createApi({
   reducerPath: "stockMovementsApi",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
   }),
-  tagTypes: ["stockLevels"],
+  tagTypes: ["stockLevels", "stockMovements"],
 
   endpoints: (builder) => ({
     // get stock levels summary (counts across all products)
@@ -24,7 +32,25 @@ export const stockMovementsApi = createApi({
         params.append("limit", limit);
         return `/stock-movements/all?${params.toString()}`;
       },
-      providesTags: ["stockLevels"],
+      providesTags: ["stockMovements"],
+    }),
+
+    // incoming stock movements (restocks)
+    getIncoming: builder.query({
+      query: buildMovementListQuery("/stock-movements/incoming"),
+      providesTags: ["stockMovements"],
+    }),
+
+    // outgoing stock movements (shipped/sold/damaged/etc.)
+    getOutgoing: builder.query({
+      query: buildMovementListQuery("/stock-movements/outgoing"),
+      providesTags: ["stockMovements"],
+    }),
+
+    // returned stock movements
+    getReturns: builder.query({
+      query: buildMovementListQuery("/stock-movements/returns"),
+      providesTags: ["stockMovements"],
     }),
 
     // restock a product
@@ -34,7 +60,27 @@ export const stockMovementsApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["stockLevels"],
+      invalidatesTags: ["stockLevels", "stockMovements"],
+    }),
+
+    // record manual outgoing stock (damage/sample/manual correction)
+    recordOutgoing: builder.mutation({
+      query: (data) => ({
+        url: "/stock-movements/stock-out",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["stockLevels", "stockMovements"],
+    }),
+
+    // record a customer return
+    recordReturn: builder.mutation({
+      query: (data) => ({
+        url: "/stock-movements/return",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["stockLevels", "stockMovements"],
     }),
   }),
 });
@@ -42,5 +88,10 @@ export const stockMovementsApi = createApi({
 export const {
   useGetStockLevelsSummaryQuery,
   useGetStockMovementsQuery,
+  useLazyGetIncomingQuery,
+  useLazyGetOutgoingQuery,
+  useLazyGetReturnsQuery,
   useRestockProductMutation,
+  useRecordOutgoingMutation,
+  useRecordReturnMutation,
 } = stockMovementsApi;

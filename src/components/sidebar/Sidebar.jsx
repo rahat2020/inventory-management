@@ -23,6 +23,7 @@ import {
 } from "react-feather";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../Logo";
+import { useGetStockLevelsSummaryQuery } from "../../redux/api/stockMovementsApi";
 
 const navigationData = [
   {
@@ -39,24 +40,24 @@ const navigationData = [
       { title: "Products", icon: Package, href: "/products" },
       { title: "Categories", icon: Tag, href: "/categories" },
       { title: "Stock Levels", icon: Archive, href: "/stock-levels" },
-      { title: "Low Stock", icon: Package, href: "#", badge: "23" },
+      { title: "Low Stock", icon: Package, href: "/low-stock", badgeKey: "lowStock" },
     ],
   },
   {
     title: "Orders",
     items: [
       { title: "All Orders", icon: ShoppingCart, href: "/all-orders" },
-      { title: "Incoming", icon: TrendingUp, href: "#", badge: "12" },
-      { title: "Outgoing", icon: Truck, href: "#" },
-      { title: "Returns", icon: TrendingDown, href: "#" },
+      { title: "Incoming", icon: TrendingUp, href: "/incoming" },
+      { title: "Outgoing", icon: Truck, href: "/outgoing" },
+      { title: "Returns", icon: TrendingDown, href: "/returns" },
     ],
   },
   {
     title: "Management",
     items: [
-      { title: "Suppliers", icon: Truck, href: "#" },
-      { title: "Customers", icon: Users, href: "#" },
-      { title: "Reports", icon: FileText, href: "#" },
+      { title: "Suppliers", icon: Truck, href: "/suppliers" },
+      { title: "Customers", icon: Users, href: "/customers" },
+      { title: "Reports", icon: FileText, href: "/reports" },
     ],
   },
 ];
@@ -64,12 +65,19 @@ const navigationData = [
 const Sidebar = () => {
   // hooks
   const location = useLocation();
+  const { data: stockSummary } = useGetStockLevelsSummaryQuery();
 
   // states
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState({});
   const [hoveredNav, setHoveredNav] = useState(null);
+
+  // live counts for nav badges declared with `badgeKey` instead of a
+  // hardcoded `badge` string
+  const badgeCounts = {
+    lowStock: stockSummary?.summary?.lowStock || 0,
+  };
 
   useEffect(() => {
     setHoveredNav(null);
@@ -205,7 +213,12 @@ const Sidebar = () => {
                       : ""
                   }`}
                 >
-                  {section.items.map((item) => (
+                  {section.items.map((rawItem) => {
+                    const badge = rawItem.badgeKey
+                      ? badgeCounts[rawItem.badgeKey] || null
+                      : rawItem.badge;
+                    const item = { ...rawItem, badge };
+                    return (
                     <Link
                       key={item.title}
                       to={item.href}
@@ -249,7 +262,8 @@ const Sidebar = () => {
                         </span>
                       )}
                     </Link>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}
